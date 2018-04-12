@@ -1,0 +1,5 @@
+inhomogeneous
+cos(x)
+sin(x)
+1
+cos(x)
