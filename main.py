@@ -13,17 +13,19 @@ from reader import read_function, read_coef, read_type_function
 
 
 def one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero):
+    sqrt_coef = coef ** 0.5
     x, t = sympy.symbols('x t')
-    return (y__x_tzero.subs(x, x - coef * t) + y__x_tzero.subs(x, x + coef * t)) / sympy.Rational(2) + \
-           sympy.Rational(0.5 / coef) * sympy.integrate(dydt__x_tzero, (x, x - coef * t, x + coef * t))
+    return (y__x_tzero.subs(x, x - sqrt_coef * t) + y__x_tzero.subs(x, x + sqrt_coef * t)) / sympy.Rational(2) + \
+           sympy.Rational(0.5 / sqrt_coef) * sympy.integrate(dydt__x_tzero, (x, x - sqrt_coef * t, x + sqrt_coef * t))
 
 
-def one_dimensional__wave_equtation__inhomogeneous(coef, y__x_tzero, dydt__x_tzero, func):
+def one_dimensional__wave_equtation__inhomogeneous(coef, y__x_tzero, dydt__x_tzero, external_influences):
+    sqrt_coef = coef ** 0.5
     x, t, T = sympy.symbols('x t T')
-    func.subs(t, T)
+    function_for_integral = external_influences.subs(t, T)
     return one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero) + \
-           sympy.Rational(0.5 / coef) * \
-           sympy.integrate(sympy.integrate(func, (x, x - coef * (t - T), x + coef * (t + T))), (T, 0, t))
+           sympy.Rational(0.5 / sqrt_coef) * \
+           sympy.integrate(sympy.integrate(function_for_integral, (x, x - sqrt_coef * (t - T), x + sqrt_coef * (t - T))), (T, 0, t))
            
 
 def main_one_dimensional__wave_equtation__homogeneous():
@@ -46,7 +48,7 @@ def main_one_dimensional__wave_equtation__inhomogeneous():
     writer_plot = WriterPlot(res)
     writer_plot.print_animation()
 
-
+@debug_input_file
 def main():
     possible_option = { 
         "homogeneous": main_one_dimensional__wave_equtation__homogeneous, 
