@@ -9,7 +9,7 @@ import sympy.abc
 
 from writer_plot import WriterPlot
 from all_for_debug import debug_function_print_result, debug_input_file
-from reader import read_function, read_coef, read_type_function
+from reader import read_function, read_coef, read_type_function, input_to_sympy
 
 
 def one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero):
@@ -38,6 +38,14 @@ def main_one_dimensional__wave_equtation__homogeneous():
     writer_plot.print_animation()
     
 
+def gui_main_one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero):
+    coef, y__x_tzero, dydt__x_tzero = input_to_sympy(coef, y__x_tzero, dydt__x_tzero)
+    print(type(coef), type(y__x_tzero), type(dydt__x_tzero))
+    res = one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero)
+    writer_plot = WriterPlot(res)
+    writer_plot.print_animation()
+
+
 def main_one_dimensional__wave_equtation__inhomogeneous():
     variables = ('x', )
     y__x_tzero = read_function(variables, "function with t = 0")
@@ -48,7 +56,7 @@ def main_one_dimensional__wave_equtation__inhomogeneous():
     writer_plot = WriterPlot(res)
     writer_plot.print_animation()
 
-@debug_input_file
+
 def main():
     possible_option = { 
         "homogeneous": main_one_dimensional__wave_equtation__homogeneous, 
