@@ -28,43 +28,30 @@ def one_dimensional__wave_equtation__inhomogeneous(coef, y__x_tzero, dydt__x_tze
            sympy.integrate(sympy.integrate(function_for_integral, (x, x - sqrt_coef * (t - T), x + sqrt_coef * (t - T))), (T, 0, t))
            
 
-def main_one_dimensional__wave_equtation__homogeneous():
-    variables = ('x', )
-    y__x_tzero = read_function(variables, "function with t = 0")
-    dydt__x_tzero = read_function(variables, "derivative of the function with t = 0")
-    coef = read_coef()
-    res = one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero)
-    writer_plot = WriterPlot(res)
-    writer_plot.print_animation()
-    
+def gui_main_one_dimensional__wave_equtation(type_equation, coef, y__x_tzero, dydt__x_tzero, external_influences):
+    possible_option = { 
+        "homogeneous": gui_main_one_dimensional__wave_equtation__homogeneous, 
+        "inhomogeneous": gui_main_one_dimensional__wave_equtation__inhomogeneous,
+    }
+    possible_args = {
+        "homogeneous": (coef, y__x_tzero, dydt__x_tzero), 
+        "inhomogeneous": (coef, y__x_tzero, dydt__x_tzero, external_influences),
+    }
+    possible_option[type_equation](*possible_args[type_equation])
+
 
 def gui_main_one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero):
     coef, y__x_tzero, dydt__x_tzero = input_to_sympy(coef, y__x_tzero, dydt__x_tzero)
-    print(type(coef), type(y__x_tzero), type(dydt__x_tzero))
     res = one_dimensional__wave_equtation__homogeneous(coef, y__x_tzero, dydt__x_tzero)
     writer_plot = WriterPlot(res)
     writer_plot.print_animation()
 
 
-def main_one_dimensional__wave_equtation__inhomogeneous():
-    variables = ('x', )
-    y__x_tzero = read_function(variables, "function with t = 0")
-    dydt__x_tzero = read_function(variables, "derivative of the function with t = 0")
-    coef = read_coef()
-    external_influences = read_function(variables + ('t', ), "function of external influences")
+def gui_main_one_dimensional__wave_equtation__inhomogeneous(coef, y__x_tzero, dydt__x_tzero, external_influences):
+    coef, y__x_tzero, dydt__x_tzero, external_influences = input_to_sympy(coef, y__x_tzero, dydt__x_tzero, external_influences)
     res = one_dimensional__wave_equtation__inhomogeneous(coef, y__x_tzero, dydt__x_tzero, external_influences)
     writer_plot = WriterPlot(res)
     writer_plot.print_animation()
 
 
-def main():
-    possible_option = { 
-        "homogeneous": main_one_dimensional__wave_equtation__homogeneous, 
-        "inhomogeneous": main_one_dimensional__wave_equtation__inhomogeneous,
-    }
-    type_function = read_type_function()
-    possible_option[type_function]()
 
-
-if __name__ == "__main__":
-    main()
