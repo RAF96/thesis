@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import Frame
 import tkinter.ttk as ttk
-import sys
-from main import gui_main_one_dimensional__wave_equtation
+from library_equation import gui_main_one_dimensional__wave_equtation
+import controller
+from writer_plot import WriterPlot
 
 
 class LabelEntry(tk.Frame):
@@ -33,8 +34,31 @@ class LabelCombobox(tk.Frame):
 
 
 class Gui(tk.Frame):
-    def __init__(self, parent=None):
-        Frame.__init__(self, parent, width=1000, height=500)
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+
+        self.menu = Menu(self, controller)
+        self.menu.pack(side=tk.LEFT)
+
+        self.plot = Plot(self) 
+        self.plot.pack(side=tk.RIGHT)
+
+        self.quit = tk.Button(self, text="Quit", command=parent.destroy)
+        self.quit.pack(side=tk.BOTTOM)
+
+    def myget(self):
+        return (
+                self.type_eq.get(),
+                self.coef.get(),
+                self.y__x_tzero.get(),
+                self.dydt__x_tzero.get(),
+                self.external_influences.get()
+                )
+
+
+class Menu(tk.Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
 
         list_type_equtations = ["homogeneous", "inhomogeneous"]
         self.type_eq = LabelCombobox(self, kwargs_label={"text": "Type equation"}, kwargs_combobox={"values": list_type_equtations, "state": "readonly"})
@@ -52,11 +76,9 @@ class Gui(tk.Frame):
         self.external_influences = LabelEntry(self, kwargs_label={"text": "external_influences"})
         self.external_influences.pack()
 
-        run = tk.Button(self, text="Run", command=(lambda: gui_main_one_dimensional__wave_equtation(*self.myget())))
-        run.pack()
-
-        quit = tk.Button(self, text="Quit", command=parent.destroy)
-        quit.pack()
+        # run should clear previous graphic
+        self.run = tk.Button(self, text="Run", command=(lambda: controller.run(*self.myget()))) # to do
+        self.run.pack()
 
     def myget(self):
         return (
@@ -68,9 +90,15 @@ class Gui(tk.Frame):
                 )
 
 
-if __name__ == '__main__':
-    window = tk.Tk()
-    my_gui = Gui(window)
-    my_gui.pack()
-    my_gui.pack_propagate(False)
-    window.mainloop()
+class Plot(tk.Frame):
+    def __init__(self, parent=None):
+        Frame.__init__(self, parent)
+
+        self.writer_plot = WriterPlot(parent)
+        self.writer_plot.pack()
+
+        self.scale = ttk.Scale(self, orient=tk.HORIZONTAL, length=200, from_=1.0, to=100.0, command=(lambda change: self.myscale(change)))
+        self.scale.pack()
+
+    def myscale(self, change):
+        print(change)
