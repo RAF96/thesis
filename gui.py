@@ -4,6 +4,7 @@ import tkinter.ttk as ttk
 from library_equation import gui_main_one_dimensional__wave_equtation
 import controller
 from writer_plot import WriterPlot
+from view_models import Time
 
 
 class LabelEntry(tk.Frame):
@@ -40,7 +41,7 @@ class Gui(tk.Frame):
         self.menu = Menu(self, controller)
         self.menu.pack(side=tk.LEFT)
 
-        self.plot = Plot(self) 
+        self.plot = Plot(self, controller)
         self.plot.pack(side=tk.RIGHT)
 
         self.quit = tk.Button(self, text="Quit", command=parent.destroy)
@@ -66,10 +67,10 @@ class Menu(tk.Frame):
 
         self.y__x_tzero = LabelEntry(self, kwargs_label={"text": "y__x_tzero"})
         self.y__x_tzero.pack()
-        
+
         self.dydt__x_tzero = LabelEntry(self, kwargs_label={"text": "dydt__x__tzero"})
         self.dydt__x_tzero.pack()
-        
+
         self.coef = LabelEntry(self, kwargs_label={"text": "coef"})
         self.coef.pack()
 
@@ -77,7 +78,7 @@ class Menu(tk.Frame):
         self.external_influences.pack()
 
         # run should clear previous graphic
-        self.run = tk.Button(self, text="Run", command=(lambda: controller.run(*self.myget()))) # to do
+        self.run = tk.Button(self, text="Run", command=(lambda: controller.run(*self.myget())))
         self.run.pack()
 
     def myget(self):
@@ -91,14 +92,27 @@ class Menu(tk.Frame):
 
 
 class Plot(tk.Frame):
-    def __init__(self, parent=None):
+    def __init__(self, parent, controller):
         Frame.__init__(self, parent)
 
-        self.writer_plot = WriterPlot(parent)
+        self.time = Time(0, 0.05)
+
+        self.writer_plot = WriterPlot(parent, self.time)
         self.writer_plot.pack()
 
-        self.scale = ttk.Scale(self, orient=tk.HORIZONTAL, length=200, from_=1.0, to=100.0, command=(lambda change: self.myscale(change)))
+        self.button = tk.Button(self, text="Pause/Continue", command=(lambda: controller.pause_continue()))
+        self.button.pack()
+
+
+        self.scale = ttk.Scale(
+                               self,
+                               variable=self.time.t,
+                               orient=tk.HORIZONTAL,
+                               length=200,
+                               from_=1.0,
+                               to=100.0
+                               )
         self.scale.pack()
 
-    def myscale(self, change):
-        print(change)
+    def change_to(self, text):
+        self.scale.to = float(text)
