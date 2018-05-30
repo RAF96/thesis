@@ -14,3 +14,10 @@ def debug_function_print_result(func):
         print(res)
         return res
     return wrapper
+
+
+@debug_input_file
+def use_input_txt():
+    from library_equation import gui_main_one_dimensional__equation
+    args = sys.stdin.read().splitlines()
+    return gui_main_one_dimensional__equation(*args)
