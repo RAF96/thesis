@@ -45,7 +45,6 @@ class WriterPlot(tk.Frame):
         self.time.t.set(0.1)
         self.time.dt = 0.05
         self.function = function
-        # self.function = sympy.lambdify((sympy.abc.x, sympy.abc.t), function)
         self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
                                        frames=200, interval=20, blit=True)
 
