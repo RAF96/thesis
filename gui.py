@@ -7,7 +7,7 @@ from view_models import Time
 
 
 class LabelEntry(tk.Frame):
-    def __init__(self, parent=None, kwargs_label={}, **kwargs):
+    def __init__(self, parent, kwargs_label={}, **kwargs):
         Frame.__init__(self, parent, kwargs)
         self.label = tk.Label(self, kwargs_label)
         self.label.pack()
@@ -82,13 +82,11 @@ class Menu(tk.Frame):
 
         self.dydt__x_tzero = LabelEntry(self, kwargs_label={"text": "(du/dt)(x, 0)"})
 
-        self.xeqa = LabelEntry(self, kwargs_label={"text": "Начальная точка a"})
+        self.y__xzero_t = LabelEntry(self, kwargs_label={"text": "u(0, t)"})
 
-        self.xeqb = LabelEntry(self, kwargs_label={"text": "Конечная точка b"})
+        self.xeql = LabelEntry(self, kwargs_label={"text": "Конечная точка l"})
 
-        self.y__xeqa_t = LabelEntry(self, kwargs_label={"text": "u(a, t)"})
-
-        self.y__xeqb_t = LabelEntry(self, kwargs_label={"text": "u(b, t)"})
+        self.y__xeql_t = LabelEntry(self, kwargs_label={"text": "u(l, t)"})
 
         self.run = tk.Button(self, text="Запуск", command=(lambda: controller.run(self.get_value())))
         self.run.pack(side=tk.BOTTOM)
@@ -105,15 +103,13 @@ class Menu(tk.Frame):
             self.dydt__x_tzero.pack_forget()
 
         if type_task == "Первая краевая задача":
-            self.xeqa.pack()
-            self.xeqb.pack()
-            self.y__xeqa_t.pack()
-            self.y__xeqb_t.pack()
+            self.y__xzero_t.pack()
+            self.xeql.pack()
+            self.y__xeql_t.pack()
         else:
-            self.xeqa.pack_forget()
-            self.xeqb.pack_forget()
-            self.y__xeqa_t.pack_forget()
-            self.y__xeqb_t.pack_forget()
+            self.y__xzero_t.pack_forget()
+            self.xeql.pack_forget()
+            self.y__xeql_t.pack_forget()
 
 
     def get_value(self):
@@ -135,10 +131,9 @@ class Menu(tk.Frame):
                 },
                 "boundary_values":
                 {
-                    "xeqa": self.xeqa.get(),
-                    "xeqb": self.xeqb.get(),
-                    "y__xeqa_t": self.y__xeqa_t.get(),
-                    "y__xeqb_t": self.y__xeqb_t.get(),
+                    "y__xzero_t": self.y__xzero_t.get(),
+                    "xeql": self.xeql.get(),
+                    "y__xeql_t": self.y__xeql_t.get(),
                 }
             }
         )
@@ -159,6 +154,12 @@ class Menu(tk.Frame):
         if equation.get("external_influences") is not None:
             self.external_influences.entry_text.set(equation["external_influences"])
 
+        if equation.get("y__xzero_t") is not None:
+            self.y__xzero_t.entry_text.set(equation["y__xzero_t"])
+        if equation.get("xeql") is not None:
+            self.xeql.entry_text.set(equation["xeql"])
+        if equation.get("y__xeql_t") is not None:
+            self.y__xeql_t.entry_text.set(equation["y__xeql_t"])
         self.change_visibility_elements()
 
     def save(self):
@@ -234,3 +235,36 @@ class MenuChooseSaved(tk.Frame):
 
         self.button_delete = tk.Button(self, text="Удалить", command=(lambda: controller.delete_equation(self.listbox.get("active"))))
         self.button_delete.pack()
+
+        self.border_menu = MenuBorder(self, controller)
+        self.border_menu.pack(side=tk.BOTTOM)
+
+
+
+class MenuBorder(tk.Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+
+        self.bottom_x = LabelEntry(self, kwargs_label={"text": "Левая граница Оси x"})
+        self.bottom_x.pack()
+
+        self.bottom_y = LabelEntry(self, kwargs_label={"text": "Левая граница Оси y"})
+        self.bottom_y.pack()
+
+        self.up_x = LabelEntry(self, kwargs_label={"text": "Правая граница Оси x"})
+        self.up_x.pack()
+
+        self.up_y = LabelEntry(self, kwargs_label={"text": "Правая граница Оси y"})
+        self.up_y.pack()
+
+        self.button = tk.Button(self, text="Применить", command=(lambda: controller.change_border_for_writer(*self.get_value())))
+        self.button.pack()
+
+    def get_value(self):
+        return (
+                self.bottom_x.get(),
+                self.bottom_y.get(),
+                self.up_x.get(),
+                self.up_y.get()
+                )
+

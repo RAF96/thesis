@@ -124,20 +124,22 @@ def calculate__one_dimensional__heat_equation__inhomogeneous(coef, y__x_tzero, e
     res = numpy.vectorize(function)
     return res
 
-def gui_main_one_dimensional__wave_equation__task_1(*args):
-    args = input_to_sympy(*args)
-    l = (*args, 0, 0)
-    return calculate__one_dimensional__wave_equation__task_1(*l)
+def gui_main_one_dimensional__wave_equation__task_1(input_data):
+    input_data_get = input_data.get("coef", "y__x_tzero", "dydt__x_tzero", "external_influences", "y__xzero_t", "y__xeql_t")
+    args = input_to_sympy(*input_data_get)
+    return calculate__one_dimensional__wave_equation__task_1(*args)
 
-def calculate__one_dimensional__wave_equation__task_1(coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql__t):
+def calculate__one_dimensional__wave_equation__task_1(coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql_t):
 
     class Task():
-        def __init__(self, coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql__t):
-            self.coef, self.y__x_tzero, self.dydt__x_tzero, self.external_influences, self.y__xzero_t, self.y__xeql__t = \
-            coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql__t
+        def __init__(self, coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql_t):
+            self.coef, self.y__x_tzero, self.dydt__x_tzero, self.external_influences, self.y__xzero_t, self.y__xeql_t = \
+            coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql_t
             self.y__x_tzero = calculate(self.y__x_tzero)
             self.dydt__x_tzero = calculate(self.dydt__x_tzero)
             self.external_influences = calculate(self.external_influences)
+            self.y__xzero_t = calculate(self.y__xzero_t)
+            self.y__xeql_t = calculate(self.y__xeql_t)
             self.sqrt_coef = coef ** 0.5
             self.y_previous = self.y = self.y_next = None
 
@@ -148,25 +150,30 @@ def calculate__one_dimensional__wave_equation__task_1(coef, y__x_tzero, dydt__x_
             gamma2 = (dt / dx * self.sqrt_coef) ** 2
 
             if self.y is None:
-                self.y = self.y__x_tzero(x, t) + dt ** 2 * self.external_influences(x, t)
+                self.y = [0] * (n + 1)
+                for i in range(0, n+1):
+                    self.y[i] = self.y__x_tzero(x[i], t) + dt ** 2 * self.external_influences(x[i], t)
                 return self.y
 
             if self.y_previous is not None:
+                self.y_next = [0] * (n + 1)
                 for i in range(1, n):
                     self.y_next[i] = 2 * self.y[i] - self.y_previous[i] + \
                                      gamma2 * (self.y[i + 1] - 2 * self.y[i] + self.y[i - 1]) + \
                                      dt ** 2 * self.external_influences(x[i], t)
-
-                self.y_next[n] = self.y_next[0] = 0
             else:
                 self.y_next = [0] * (n + 1)
                 for i in range(1, n):
-                    self.y_next[i] = self.y[i] + gamma2 / 2 * (self.y[i + 1] - 2 * self.y[i] + self.y[i - 1])
+                    self.y_next[i] = self.y[i] + \
+                                     gamma2 / 2 * (self.y[i + 1] - 2 * self.y[i] + self.y[i - 1]) + \
+                                     dt * self.dydt__x_tzero(x[i], t) + \
+                                     dt ** 2 / 2 * self.external_influences(x[i], t)
 
-                self.y_next[n] = self.y_next[0] = 0
+            self.y_next[0] = self.y__xzero_t(x[i], t)
+            self.y_next[n] = self.y__xeql_t(x[i], t)
 
             self.y_previous, self.y = self.y, self.y_next
             return self.y_next
 
-    res = Task(coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql__t).function
+    res = Task(coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql_t).function
     return res

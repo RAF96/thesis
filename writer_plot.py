@@ -21,6 +21,23 @@ class WriterPlot(tk.Frame):
         self.ax.axvline(x=0, color='b')
         self.animation = None
 
+    def str_to_float(self, x):
+        try:
+            res = float(x)
+            return res
+        except:
+            return None
+
+    #change make after click button "Запуск". it is not good
+    def update_xy_lim(self, bottom_x, bottom_y, up_x, up_y):
+        bottom_x = self.str_to_float(bottom_x) if self.str_to_float(bottom_x) is not None else self.ax.get_xlim()[0]
+        bottom_y = self.str_to_float(bottom_y) if self.str_to_float(bottom_y) is not None else self.ax.get_ylim()[0]
+        up_x = self.str_to_float(up_x) if self.str_to_float(up_x) is not None else self.ax.get_xlim()[1]
+        up_y = self.str_to_float(up_y) if self.str_to_float(up_y) is not None else self.ax.get_ylim()[1]
+
+        self.ax.set_xlim(bottom_x, up_x)
+        self.ax.set_ylim(bottom_y, up_y)
+
     def get_init(self):
         def init():
             self.line.set_data([], [])
@@ -29,7 +46,7 @@ class WriterPlot(tk.Frame):
 
     def get_animate(self):
         def animate(i):
-            x = numpy.linspace(-11, 11, 100)
+            x = numpy.linspace(self.plot_bottom_x, self.plot_up_x, 10)
             y = self.function(x, self.time.t.get())
             self.time.next()
             self.line.set_data(x, y)
@@ -40,10 +57,11 @@ class WriterPlot(tk.Frame):
         if self.animation is not None:
             self.animation.event_source.stop()
 
-    def print_animation(self, function):
+    def print_animation(self, function, plot_bottom_x, plot_up_x):
         self.clear()
         self.time.t.set(0.1)
         self.time.dt = 0.05
+        self.plot_bottom_x, self.plot_up_x = plot_bottom_x, plot_up_x
         self.function = function
         self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
                                        frames=200, interval=20, blit=True)
