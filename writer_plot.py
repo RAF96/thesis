@@ -8,9 +8,10 @@ import tkinter as tk
 
 class WriterPlot(tk.Frame):
 
-    def __init__(self, parent, time):
+    def __init__(self, parent, controller, time):
         tk.Frame.__init__(self, parent)
         self.parent = parent
+        self.controller = controller
         self.time = time
         self.fig = Figure()
         self.canvas = FigureCanvasTkAgg(self.fig, master=parent)
@@ -46,9 +47,10 @@ class WriterPlot(tk.Frame):
 
     def get_animate(self):
         def animate(i):
-            x = numpy.linspace(self.plot_bottom_x, self.plot_up_x, 10)
+            x = numpy.linspace(self.plot_bottom_x, self.plot_up_x, 50)
             y = self.function(x, self.time.t.get())
             self.time.next()
+            self.controller.new_function(self.time.t.get())
             self.line.set_data(x, y)
             return self.line,
         return animate

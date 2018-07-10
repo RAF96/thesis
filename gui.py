@@ -51,8 +51,13 @@ class Gui(tk.Frame):
         self.plot = Plot(self, controller)
         self.plot.pack(side=tk.LEFT)
 
-        self.quit = tk.Button(self, text="Выход", command=parent.destroy)
-        self.quit.pack(side=tk.BOTTOM)
+        self.var = tk.StringVar(value="t =")
+        self.entry = tk.Label(self, textvariable=self.var)
+        self.entry.config(font=("Courier", 20))
+        self.entry.pack()
+
+    def change(self, time):
+        self.var.set("t = " + "%.2f" % time)
 
 
 class Menu(tk.Frame):
@@ -194,7 +199,7 @@ class Plot(tk.Frame):
 
         self.time = Time(0, 0.05)
 
-        self.writer_plot = WriterPlot(parent, self.time)
+        self.writer_plot = WriterPlot(parent, controller, self.time)
         self.writer_plot.pack()
 
         self.button = tk.Button(self, text="Пауза/Продолжить", command=(lambda: controller.pause_continue()))
