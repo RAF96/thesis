@@ -19,6 +19,7 @@ class Controller:
         self.window.mainloop()
 
     def run(self, input_data):
+        self.input_data = input_data
         equation = gui_main_one_dimensional__equation(input_data)
         if input_data["boundary_values"]["xeql"]:
             bottom_x = 0
@@ -33,6 +34,17 @@ class Controller:
             self.my_gui.plot.writer_plot.time.dt = 0
         else:
             self.my_gui.plot.writer_plot.time.dt = 0.05
+
+    def get_max_delta_x(self):
+        dt = 0.05
+        type_equation = self.input_data["supporting_data"]["type_equation"]
+        coef = float(self.input_data["entry_conditions"]["coef"])
+        if type_equation == "волновое уравнение":
+            return (dt * 2 * coef ) ** 0.5
+        elif type_equation == "уравнение теплопроводности":
+            return (dt * 2 * coef) ** 0.5
+        else:
+            raise Exception("Not type equation")
 
     def get_names_saved_equations(self):
         if not self.db.equations:
@@ -67,7 +79,7 @@ class Controller:
 class InputData():
     def __init__(self):
         self.dict = dict()
-        self.list = "supporting data", "entry_conditions", "boundary_values"
+        self.list = "supporting_data", "entry_conditions", "boundary_values"
 
         list_supporting_data = "type_task", "type_equation"
         self.dict.update({"supporting_data": {e : None for e in list_supporting_data}})
@@ -102,5 +114,3 @@ class InputData():
 
     def __str__(self):
         return "InputData:\n" + str(self.dict)
-
-

@@ -47,7 +47,7 @@ class WriterPlot(tk.Frame):
 
     def get_animate(self):
         def animate(i):
-            x = numpy.linspace(self.plot_bottom_x, self.plot_up_x, 50)
+            x = numpy.linspace(self.plot_bottom_x, self.plot_up_x, self.num_x)
             y = self.function(x, self.time.t.get())
             self.time.next()
             self.controller.new_function(self.time.t.get())
@@ -63,7 +63,11 @@ class WriterPlot(tk.Frame):
         self.clear()
         self.time.t.set(0.1)
         self.time.dt = 0.05
+
+        self.max_delta_x = self.controller.get_max_delta_x()
         self.plot_bottom_x, self.plot_up_x = plot_bottom_x, plot_up_x
+        self.num_x = int((self.plot_up_x - self.plot_bottom_x) / self.max_delta_x)
+
         self.function = function
         self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
                                        frames=200, interval=20, blit=True)
