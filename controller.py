@@ -1,6 +1,6 @@
 import tkinter as tk
 import pymongo
-from library_equation import gui_main_one_dimensional__equation
+from library_equation.library_equation import gui_main_one_dimensional__equation
 from writer_plot import WriterPlot
 import gui
 
