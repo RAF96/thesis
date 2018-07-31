@@ -23,6 +23,7 @@ class AnimationPlot:
 
         self.y = list()
         self.x = numpy.linspace(self.start_x, self.end_x, self.num_x)
+        self.t = numpy.linspace(self.time_start, self.time_finish, self.num_time_step)
 
     def get_dx(self):
         return ((self.time_finish - self.time_start) / self.num_time_step * 2) ** 0.5

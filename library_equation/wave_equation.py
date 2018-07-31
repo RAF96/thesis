@@ -46,10 +46,7 @@ def gui_main_one_dimensional__wave_equation__homogeneous(coef, y__x_tzero, dydt_
     function = calculate(one_dimensional__wave_equation__homogeneous(coef, y__x_tzero, dydt__x_tzero))
     animation_plot = AnimationPlot()
 
-    for t in numpy.linspace(
-            animation_plot.time_start,
-            animation_plot.time_finish,
-            animation_plot.num_time_step):
+    for t in animation_plot.t:
         animation_plot.y.append(function(animation_plot.x, t))
 
     return animation_plot
@@ -61,10 +58,7 @@ def gui_main_one_dimensional__wave_equation__inhomogeneous(coef, y__x_tzero, dyd
 
     animation_plot = AnimationPlot()
 
-    for t in numpy.linspace(
-            animation_plot.time_start,
-            animation_plot.time_finish,
-            animation_plot.num_time_step):
+    for t in animation_plot.t:
         animation_plot.y.append(function(animation_plot.x, t))
 
     return animation_plot
@@ -118,10 +112,7 @@ def calculate__one_dimensional__wave_equation__task_1(coef, y__x_tzero, dydt__x_
     animation_plot = AnimationPlot()
     y_previous = y = None
 
-    for t in numpy.linspace(
-            animation_plot.time_start,
-            animation_plot.time_finish,
-            animation_plot.num_time_step):
+    for t in animation_plot.t:
         animation_plot.y.append(function(animation_plot.x, t, y_previous, y))
         y_previous, y = y, animation_plot.y[-1]
 

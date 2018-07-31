@@ -28,10 +28,7 @@ def gui_main_one_dimensional__heat_equation__homogeneous(coef, y__x_tzero):
     function = calculate(one_dimensional__heat_equation__homogeneous(coef, y__x_tzero))
 
     animation_plot = AnimationPlot()
-    for t in numpy.linspace(
-            animation_plot.time_start,
-            animation_plot.time_finish,
-            animation_plot.num_time_step):
+    for t in animation_plot.t:
         next_y = function(animation_plot.x, t)
         animation_plot.y.append(next_y)
 
@@ -119,15 +116,10 @@ def calculate__one_dimensional__heat_equation__task_1(coef, y__x_tzero, external
         return y_next
 
     animation_plot = AnimationPlot()
-    for t in numpy.linspace(
-            animation_plot.time_start,
-            animation_plot.time_finish,
-            animation_plot.num_time_step):
-        if t == animation_plot.time_start:
-            next_y = function(animation_plot.x, t, None)
-        else:
-            next_y = function(animation_plot.x, t, animation_plot.y[-1])
-        animation_plot.y.append(next_y)
+    y = None
+    for t in animation_plot.t:
+        y = function(animation_plot.x, t, y)
+        animation_plot.y.append(y)
 
     return animation_plot
 
