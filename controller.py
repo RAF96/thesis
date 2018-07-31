@@ -1,7 +1,6 @@
 import tkinter as tk
 import pymongo
 from library_equation.library_equation import gui_main_one_dimensional__equation
-from writer_plot import WriterPlot
 import gui
 
 
@@ -21,6 +20,7 @@ class Controller:
     def run(self, input_data):
         self.input_data = input_data
         equation = gui_main_one_dimensional__equation(input_data)
+        '''
         if input_data["boundary_values"]["xeql"]:
             bottom_x = 0
             up_x = float(input_data["boundary_values"]["xeql"])
@@ -28,6 +28,8 @@ class Controller:
             bottom_x = -10
             up_x = 10
         self.my_gui.plot.writer_plot.print_animation(equation, bottom_x, up_x)
+        '''
+        self.my_gui.plot.writer_plot.print_animation(equation)
 
     def pause_continue(self, *args):
         if self.my_gui.plot.writer_plot.time.dt != 0:

@@ -8,9 +8,9 @@ import sympy
 import sympy.parsing.sympy_parser
 from sympy import abc
 
-from writer_plot import WriterPlot
 from all_for_debug import debug_function_print_result, debug_input_file
 from reader import input_to_sympy
+from view_models import AnimationPlot
 
 
 def gui_main_one_dimensional__heat_equation__task_0(input_data):
@@ -25,7 +25,17 @@ def calculate(function):
     return sympy.lambdify((abc.x, abc.t), function)
 
 def gui_main_one_dimensional__heat_equation__homogeneous(coef, y__x_tzero):
-    return calculate(one_dimensional__heat_equation__homogeneous(coef, y__x_tzero))
+    function = calculate(one_dimensional__heat_equation__homogeneous(coef, y__x_tzero))
+
+    animation_plot = AnimationPlot()
+    for t in numpy.linspace(
+            animation_plot.time_start,
+            animation_plot.time_finish,
+            animation_plot.num_time_step):
+        next_y = function(animation_plot.x, t)
+        animation_plot.y.append(next_y)
+
+    return animation_plot
 
 
 def gui_main_one_dimensional__heat_equation__inhomogeneous(coef, y__x_tzero, external_influences):
@@ -43,7 +53,7 @@ def one_dimensional__heat_equation__homogeneous(coef, y__x_tzero):
     res = res.subs(t, sympy.abc.t)
     return res
 
-
+#to do. Too slowly and I didn't decide what I need to do. Supporting was stoped. Now not working.
 def calculate__one_dimensional__heat_equation__inhomogeneous(coef, y__x_tzero, external_influences):
     first_augend = one_dimensional__heat_equation__homogeneous(coef, y__x_tzero)
     lambdify_first_augend = sympy.lambdify((abc.x, abc.t), first_augend)
@@ -77,44 +87,49 @@ def gui_main_one_dimensional__heat_equation__task_1(input_data):
 
 
 def calculate__one_dimensional__heat_equation__task_1(coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t):
+    y__x_tzero = calculate(y__x_tzero)
+    external_influences = calculate(external_influences)
+    y__xzero_t = calculate(y__xzero_t)
+    y__xeql_t = calculate(y__xeql_t)
+    sqrt_coef = coef ** 0.5
 
-    class Task():
-        def __init__(self, coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t):
-            self.coef, self.y__x_tzero, self.external_influences, self.y__xzero_t, self.y__xeql_t = \
-            coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t
-            self.y__x_tzero = calculate(self.y__x_tzero)
-            self.external_influences = calculate(self.external_influences)
-            self.y__xzero_t = calculate(self.y__xzero_t)
-            self.y__xeql_t = calculate(self.y__xeql_t)
-            self.sqrt_coef = coef ** 0.5
-            self.y = self.y_next = None
+    def function(x, t, y):
+        y_next = None
+        n = len(x) - 1
+        dx = x[1] - x[0]
+        dt = 0.05
+        gamma2 = dt * (1. / dx * sqrt_coef) ** 2
 
-        def function(self, x, t):
-            n = len(x) - 1
-            dx = x[1] - x[0]
-            dt = 0.05
-            gamma2 = dt * (1. / dx * self.sqrt_coef) ** 2
+        if y is None:
+            y = [0] * (n + 1)
+            for i in range(0, n+1):
+                y[i] = y__x_tzero(x[i], t) + dt * external_influences(x[i], t)
+            return y
 
-            if self.y is None:
-                self.y = [0] * (n + 1)
-                for i in range(0, n+1):
-                    self.y[i] = self.y__x_tzero(x[i], t) + dt * self.external_influences(x[i], t)
-                return self.y
+        y_next = [0] * (n + 1)
+        for i in range(1, n):
+            y_next[i] = y[i] + \
+                             gamma2 * (y[i + 1] - 2 * y[i] + y[i - 1]) + \
+                             dt * external_influences(x[i], t)
 
-            self.y_next = [0] * (n + 1)
-            for i in range(1, n):
-                self.y_next[i] = self.y[i] + \
-                                 gamma2 * (self.y[i + 1] - 2 * self.y[i] + self.y[i - 1]) + \
-                                 dt * self.external_influences(x[i], t)
+        y_next[0] = y__xzero_t(x[i], t)
+        y_next[n] = y__xeql_t(x[i], t)
 
-            self.y_next[0] = self.y__xzero_t(x[i], t)
-            self.y_next[n] = self.y__xeql_t(x[i], t)
+        y = y_next
+        return y_next
 
-            self.y = self.y_next
-            return self.y_next
+    animation_plot = AnimationPlot()
+    for t in numpy.linspace(
+            animation_plot.time_start,
+            animation_plot.time_finish,
+            animation_plot.num_time_step):
+        if t == animation_plot.time_start:
+            next_y = function(animation_plot.x, t, None)
+        else:
+            next_y = function(animation_plot.x, t, animation_plot.y[-1])
+        animation_plot.y.append(next_y)
 
-    res = Task(coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t).function
-    return res
+    return animation_plot
 
 
 def gui_main_one_dimensional__heat_equation__task_2(input_data):

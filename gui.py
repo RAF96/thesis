@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import Frame
 import tkinter.ttk as ttk
 import controller
-from writer_plot import WriterPlot
+from writer_plot import WriterPlot_new
 from view_models import Time
 
 
@@ -48,7 +48,7 @@ class Gui(tk.Frame):
         self.menu = Menu(self, controller)
         self.menu.pack(side=tk.LEFT)
 
-        self.plot = Plot(self, controller)
+        self.plot = GuiPlot(self, controller)
         self.plot.pack(side=tk.LEFT)
 
         self.var = tk.StringVar(value="t =")
@@ -193,13 +193,14 @@ class NewWindowForSave(tk.Frame):
         self.parent.destroy()
 
 
-class Plot(tk.Frame):
+class GuiPlot(tk.Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
 
         self.time = Time(0, 0.05)
 
-        self.writer_plot = WriterPlot(parent, controller, self.time)
+        # self.writer_plot = WriterPlot(parent, controller, self.time)
+        self.writer_plot = WriterPlot_new(parent, controller)
         self.writer_plot.pack()
 
         self.button = tk.Button(self, text="Пауза/Продолжить", command=(lambda: controller.pause_continue()))

@@ -6,6 +6,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import tkinter as tk
 
+#to do. The part of code wiil delete after repair scale and add "changes end time"
+'''
 class WriterPlot(tk.Frame):
 
     def __init__(self, parent, controller, time):
@@ -71,5 +73,45 @@ class WriterPlot(tk.Frame):
         self.function = function
         self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
                                        frames=200, interval=20, blit=True)
+
+        self.parent.mainloop()
+'''
+
+class WriterPlot_new(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.parent = parent
+        self.controller = controller
+        self.fig = Figure()
+        self.canvas = FigureCanvasTkAgg(self.fig, master=parent)
+        self.canvas.get_tk_widget().pack()
+        self.ax = self.fig.add_subplot(111, xlim=(-10, 10), ylim=(-10, 10))
+        self.line, = self.ax.plot([], [], color='r')
+        self.ax.axhline(y=0, color='b')
+        self.ax.axvline(x=0, color='b')
+        self.animation = None
+
+    def get_init(self):
+        def init():
+            self.line.set_data([], [])
+            return self.line,
+        return init
+
+    def get_animate(self):
+        def animate(i):
+            self.line.set_data(self.animation_plot.x, self.animation_plot.y[i])
+            return self.line,
+        return animate
+
+    def clear(self):
+        if self.animation is not None:
+            self.animation.event_source.stop()
+
+    def print_animation(self, animation_plot):
+        self.clear()
+
+        self.animation_plot = animation_plot
+        self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
+                                       frames=len(animation_plot.y), interval=20, blit=True)
 
         self.parent.mainloop()
