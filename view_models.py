@@ -1,7 +1,7 @@
 import tkinter as tk
 import numpy
 
-class Time:
+class DisplayedTime:
     def __init__(self, t, dt):
         self.t = tk.DoubleVar(t)
         self.dt = dt

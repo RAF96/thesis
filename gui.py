@@ -3,7 +3,7 @@ from tkinter import Frame
 import tkinter.ttk as ttk
 import controller
 from writer_plot import WriterPlot_new
-from view_models import Time
+from view_models import DisplayedTime
 
 
 class LabelEntry(tk.Frame):
@@ -51,14 +51,11 @@ class Gui(tk.Frame):
         self.plot = GuiPlot(self, controller)
         self.plot.pack(side=tk.LEFT)
 
-        self.var = tk.StringVar(value="t =")
-        self.entry = tk.Label(self, textvariable=self.var)
-        self.entry.config(font=("Courier", 20))
-        self.entry.pack()
-
+    # need delete.
+    '''
     def change(self, time):
         self.var.set("t = " + "%.2f" % time)
-
+    '''
 
 class Menu(tk.Frame):
     def __init__(self, parent, controller):
@@ -197,11 +194,14 @@ class GuiPlot(tk.Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
 
-        self.time = Time(0, 0.05)
+        self.time = DisplayedTime(0, 0.05)
 
         # self.writer_plot = WriterPlot(parent, controller, self.time)
-        self.writer_plot = WriterPlot_new(parent, controller)
-        self.writer_plot.pack()
+        self.writer_plot = WriterPlot_new(parent, controller, self.time)
+        self.writer_plot.pack(side = tk.TOP)
+
+        self.view_time = ViewTime(self, controller, self.time)
+        self.view_time.pack(side = tk.RIGHT)
 
         self.button = tk.Button(self, text="Пауза/Продолжить", command=(lambda: controller.pause_continue()))
         self.button.pack()
@@ -217,8 +217,22 @@ class GuiPlot(tk.Frame):
                                )
         self.scale.pack()
 
+
+
     def change_to(self, text):
         self.scale.to = float(text)
+
+class ViewTime(tk.Frame):
+    def __init__(self, parent, controller, time):
+        Frame.__init__(self, parent)
+
+        self.text = tk.Label(self, text="t =")
+        self.text.config(font=("Courier", 20))
+        self.text.pack(side = tk.LEFT)
+
+        self.time = tk.Label(self, textvariable=time.t)
+        self.time.config(font=("Courier", 20))
+        self.time.pack(side = tk.RIGHT)
 
 
 class MenuChooseSaved(tk.Frame):

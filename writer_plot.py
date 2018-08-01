@@ -78,10 +78,11 @@ class WriterPlot(tk.Frame):
 '''
 
 class WriterPlot_new(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, time):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.controller = controller
+        self.time = time
         self.fig = Figure()
         self.canvas = FigureCanvasTkAgg(self.fig, master=parent)
         self.canvas.get_tk_widget().pack()
@@ -90,6 +91,7 @@ class WriterPlot_new(tk.Frame):
         self.ax.axhline(y=0, color='b')
         self.ax.axvline(x=0, color='b')
         self.animation = None
+
 
     def get_init(self):
         def init():
@@ -100,6 +102,7 @@ class WriterPlot_new(tk.Frame):
     def get_animate(self):
         def animate(i):
             self.line.set_data(self.animation_plot.x, self.animation_plot.y[i])
+            self.time.next()
             return self.line,
         return animate
 
