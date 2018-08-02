@@ -118,3 +118,6 @@ class WriterPlot_new(tk.Frame):
                                        frames=len(animation_plot.y), interval=20, blit=True)
 
         self.parent.mainloop()
+
+    def restart(self):
+        pass

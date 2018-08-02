@@ -51,11 +51,6 @@ class Gui(tk.Frame):
         self.plot = GuiPlot(self, controller)
         self.plot.pack(side=tk.LEFT)
 
-    # need delete.
-    '''
-    def change(self, time):
-        self.var.set("t = " + "%.2f" % time)
-    '''
 
 class Menu(tk.Frame):
     def __init__(self, parent, controller):
@@ -90,11 +85,11 @@ class Menu(tk.Frame):
 
         self.y__xeql_t = LabelEntry(self, kwargs_label={"text": "u(l, t)"})
 
-        self.run = tk.Button(self, text="Запуск", command=(lambda: controller.run(self.get_value())))
-        self.run.pack(side=tk.BOTTOM)
+        self.start_new_animation = tk.Button(self, text="Запуск", command=(lambda: controller.start_new(self.get_value())))
+        self.start_new_animation.pack(side=tk.BOTTOM)
 
-        self.run = tk.Button(self, text="Сохранить", command=(lambda: self.save()))
-        self.run.pack(side=tk.BOTTOM)
+        self.save = tk.Button(self, text="Сохранить", command=(lambda: self.save()))
+        self.save.pack(side=tk.BOTTOM)
 
     def change_visibility_elements(self, *args):
         type_equation = self.type_equation.get()
@@ -200,11 +195,8 @@ class GuiPlot(tk.Frame):
         self.writer_plot = WriterPlot_new(parent, controller, self.time)
         self.writer_plot.pack(side = tk.TOP)
 
-        self.view_time = ViewTime(self, controller, self.time)
-        self.view_time.pack(side = tk.RIGHT)
-
         self.button = tk.Button(self, text="Пауза/Продолжить", command=(lambda: controller.pause_continue()))
-        self.button.pack()
+        self.button.pack(side = tk.TOP)
 
 
         self.scale = ttk.Scale(
@@ -215,22 +207,33 @@ class GuiPlot(tk.Frame):
                                from_=0.1,
                                to=100.0
                                )
-        self.scale.pack()
+        self.scale.pack(side = tk.LEFT)
 
+        self.finish_time = LabelEntry(self, kwargs_label={"text": "Finish Time"})
+        self.finish_time.pack(side = tk.LEFT)
+
+        self.view_time = ViewTime(self, controller, self.time)
+        self.view_time.pack(side = tk.RIGHT)
+
+        def change_finish_time(finish_time):
+            self.change_finish_time(float(finish_time))
+
+        self.button_change_finish_time = tk.Button(self, text="Применить", command=(lambda: change_finish_time()))
+        self.button_change_finish_time.pack(side = tk.BOTTOM)
 
 
     def change_to(self, text):
         self.scale.to = float(text)
 
+
 class ViewTime(tk.Frame):
     def __init__(self, parent, controller, time):
         Frame.__init__(self, parent)
 
-        self.text = tk.Label(self, text="t =")
+        self.text = tk.Label(self, text=" t = ")
         self.text.config(font=("Courier", 20))
         self.text.pack(side = tk.LEFT)
-
-        self.time = tk.Label(self, textvariable=time.t)
+        self.time = tk.Label(self, textvariable=time.view_t)
         self.time.config(font=("Courier", 20))
         self.time.pack(side = tk.RIGHT)
 

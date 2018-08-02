@@ -1,7 +1,8 @@
 import tkinter as tk
 import pymongo
-from library_equation.library_equation import gui_main_one_dimensional__equation
+# from library_equation.library_equation import gui_main_one_dimensional__equation
 import gui
+from view_models import ChangerAnimationPlot
 
 
 class Controller:
@@ -10,16 +11,19 @@ class Controller:
         self.client = pymongo.MongoClient('localhost', 27017)
         self.db = self.client.test_database
 
+        self.changer_animation_plot = ChangerAnimationPlot()
+
         self.window = tk.Tk()
         self.window.attributes()
         self.my_gui = gui.Gui(self.window, self)
-        self.my_gui.master.maxsize(800, 600)
+        self.my_gui.master.minsize(1000, 600)
         self.my_gui.pack()
         self.window.mainloop()
 
-    def run(self, input_data):
+    def start_new(self, input_data):
         self.input_data = input_data
-        equation = gui_main_one_dimensional__equation(input_data)
+        equation = self.changer_animation_plot.start_new(input_data)
+        # equation = gui_main_one_dimensional__equation(input_data)
         '''
         if input_data["boundary_values"]["xeql"]:
             bottom_x = 0
@@ -32,11 +36,10 @@ class Controller:
         self.my_gui.plot.writer_plot.print_animation(equation)
 
     def pause_continue(self, *args):
-        if self.my_gui.plot.writer_plot.time.dt != 0:
-            self.my_gui.plot.writer_plot.time.dt = 0
-        else:
-            self.my_gui.plot.writer_plot.time.dt = 0.05
+        pass
 
+    # it is path code need move and delete.
+    '''
     def get_max_delta_x(self):
         dt = 0.05
         type_equation = self.input_data["supporting_data"]["type_equation"]
@@ -47,6 +50,7 @@ class Controller:
             return (dt * 2 * coef) ** 0.5
         else:
             raise Exception("Not type equation")
+    '''
 
     def get_names_saved_equations(self):
         if not self.db.equations:
