@@ -108,7 +108,10 @@ class WriterPlot_new(tk.Frame):
 
     def clear(self):
         if self.animation is not None:
+            self.canvas.get_tk_widget().pack_forget()
             self.animation.event_source.stop()
+            self.canvas = FigureCanvasTkAgg(self.fig, master=self.parent)
+            self.canvas.get_tk_widget().pack()
         self.time.start_value()
 
     def print_animation(self, animation_plot):

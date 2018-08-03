@@ -192,8 +192,9 @@ class GuiPlot(tk.Frame):
         self.controller = controller
         self.time = DisplayedTime(0, 0.05)
 
-        # self.writer_plot = WriterPlot(parent, controller, self.time)
-        self.writer_plot = WriterPlot_new(parent, controller, self.time)
+        self.frame_for_writer_plot = tk.Frame(self)
+        self.frame_for_writer_plot.pack(side = tk.TOP)
+        self.writer_plot = WriterPlot_new(self.frame_for_writer_plot, controller, self.time)
         self.writer_plot.pack(side = tk.TOP)
 
         self.button = tk.Button(self, text="Пауза/Продолжить", command=(lambda: controller.pause_continue()))
