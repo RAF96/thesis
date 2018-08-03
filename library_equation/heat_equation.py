@@ -13,21 +13,21 @@ from reader import input_to_sympy
 from view_models import AnimationPlot
 
 
-def gui_main_one_dimensional__heat_equation__task_0(input_data):
+def gui_main_one_dimensional__heat_equation__task_0(animation_plot, input_data):
     coef, y__x_tzero, external_influences = input_data.get("coef", "y__x_tzero", "external_influences")
     coef, y__x_tzero, external_influences = input_to_sympy(coef, y__x_tzero, external_influences)
     if external_influences:
-        return  gui_main_one_dimensional__heat_equation__inhomogeneous(coef, y__x_tzero, external_influences)
+        return  gui_main_one_dimensional__heat_equation__inhomogeneous(animation_plot, coef, y__x_tzero, external_influences)
     else:
-        return gui_main_one_dimensional__heat_equation__homogeneous(coef, y__x_tzero)
+        return gui_main_one_dimensional__heat_equation__homogeneous(animation_plot, coef, y__x_tzero)
 
 def calculate(function):
     return sympy.lambdify((abc.x, abc.t), function)
 
-def gui_main_one_dimensional__heat_equation__homogeneous(coef, y__x_tzero):
+def gui_main_one_dimensional__heat_equation__homogeneous(animation_plot, coef, y__x_tzero):
     function = calculate(one_dimensional__heat_equation__homogeneous(coef, y__x_tzero))
 
-    animation_plot = AnimationPlot()
+    animation_plot.clean_result_part()
     for t in animation_plot.t:
         next_y = function(animation_plot.x, t)
         animation_plot.y.append(next_y)
@@ -77,13 +77,13 @@ def calculate__one_dimensional__heat_equation__inhomogeneous(coef, y__x_tzero, e
     res = numpy.vectorize(function)
     return res
 
-def gui_main_one_dimensional__heat_equation__task_1(input_data):
+def gui_main_one_dimensional__heat_equation__task_1(animation_plot, input_data):
     input_data_get = input_data.get("coef", "y__x_tzero", "external_influences", "y__xzero_t", "y__xeql_t")
     args = input_to_sympy(*input_data_get)
-    return calculate__one_dimensional__heat_equation__task_1(*args)
+    return calculate__one_dimensional__heat_equation__task_1(animation_plot, *args)
 
 
-def calculate__one_dimensional__heat_equation__task_1(coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t):
+def calculate__one_dimensional__heat_equation__task_1(animation_plot, coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t):
     y__x_tzero = calculate(y__x_tzero)
     external_influences = calculate(external_influences)
     y__xzero_t = calculate(y__xzero_t)
@@ -115,7 +115,7 @@ def calculate__one_dimensional__heat_equation__task_1(coef, y__x_tzero, external
         y = y_next
         return y_next
 
-    animation_plot = AnimationPlot()
+    animation_plot.clean_result_part()
     y = None
     for t in animation_plot.t:
         y = function(animation_plot.x, t, y)

@@ -23,34 +23,15 @@ class Controller:
     def start_new(self, input_data):
         self.input_data = input_data
         equation = self.changer_animation_plot.start_new(input_data)
-        # equation = gui_main_one_dimensional__equation(input_data)
-        '''
-        if input_data["boundary_values"]["xeql"]:
-            bottom_x = 0
-            up_x = float(input_data["boundary_values"]["xeql"])
-        else:
-            bottom_x = -10
-            up_x = 10
-        self.my_gui.plot.writer_plot.print_animation(equation, bottom_x, up_x)
-        '''
         self.my_gui.plot.writer_plot.print_animation(equation)
+
+    def change_finish_time(self, finish_time):
+        equation = self.changer_animation_plot.change_finish_time(finish_time)
+        if hasattr(self, "input_data"):
+            self.my_gui.plot.writer_plot.print_animation(equation)
 
     def pause_continue(self, *args):
         pass
-
-    # it is path code need move and delete.
-    '''
-    def get_max_delta_x(self):
-        dt = 0.05
-        type_equation = self.input_data["supporting_data"]["type_equation"]
-        coef = float(self.input_data["entry_conditions"]["coef"])
-        if type_equation == "волновое уравнение":
-            return (dt * 2 * coef ) ** 0.5
-        elif type_equation == "уравнение теплопроводности":
-            return (dt * 2 * coef) ** 0.5
-        else:
-            raise Exception("Not type equation")
-    '''
 
     def get_names_saved_equations(self):
         if not self.db.equations:

@@ -7,7 +7,7 @@ from view_models import DisplayedTime
 
 
 class LabelEntry(tk.Frame):
-    def __init__(self, parent, kwargs_label={}, **kwargs):
+    def __init__(self, parent, kwargs_label={}, kwargs_entry={}, **kwargs):
         Frame.__init__(self, parent, kwargs)
         self.label = tk.Label(self, kwargs_label)
         self.label.pack()
@@ -189,6 +189,7 @@ class GuiPlot(tk.Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
 
+        self.controller = controller
         self.time = DisplayedTime(0, 0.05)
 
         # self.writer_plot = WriterPlot(parent, controller, self.time)
@@ -210,15 +211,16 @@ class GuiPlot(tk.Frame):
         self.scale.pack(side = tk.LEFT)
 
         self.finish_time = LabelEntry(self, kwargs_label={"text": "Finish Time"})
+        self.finish_time.entry_text.set(100)
         self.finish_time.pack(side = tk.LEFT)
 
         self.view_time = ViewTime(self, controller, self.time)
         self.view_time.pack(side = tk.RIGHT)
 
         def change_finish_time(finish_time):
-            self.change_finish_time(float(finish_time))
+            self.controller.change_finish_time(float(finish_time))
 
-        self.button_change_finish_time = tk.Button(self, text="Применить", command=(lambda: change_finish_time()))
+        self.button_change_finish_time = tk.Button(self, text="Применить", command=(lambda: change_finish_time(self.finish_time.get())))
         self.button_change_finish_time.pack(side = tk.BOTTOM)
 
 
