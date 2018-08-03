@@ -31,9 +31,6 @@ class Controller:
         if hasattr(self, "input_data"):
             self.my_gui.plot.writer_plot.print_animation(self.changer_animation_plot.animation_plot)
 
-    def pause_continue(self, *args):
-        pass
-
     def get_names_saved_equations(self):
         if not self.db.equations:
             return tuple()

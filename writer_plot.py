@@ -91,6 +91,7 @@ class WriterPlot_new(tk.Frame):
         self.ax.axhline(y=0, color='b')
         self.ax.axvline(x=0, color='b')
         self.animation = None
+        self.animation_pause = True
 
 
     def get_init(self):
@@ -117,11 +118,19 @@ class WriterPlot_new(tk.Frame):
     def print_animation(self, animation_plot):
         self.clear()
 
+        self.animation_pause = False
         self.animation_plot = animation_plot
         self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
                                        frames=len(animation_plot.y), interval=20, blit=True)
 
         self.parent.mainloop()
 
-    def restart(self):
-        pass
+    def pause_continue(self):
+        if self.animation is None:
+            return
+        if self.animation_pause == True:
+            self.animation.event_source.start()
+            self.animation_pause = False
+        else:
+            self.animation_pause = True
+            self.animation.event_source.stop()
