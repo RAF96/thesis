@@ -43,8 +43,8 @@ class AnimationPlot:
     def clean_result_part(self):
         self.y = list()
 
-    def change_time_finish(self, finish_time):
-        self.finish_time = finish_time
+    def change_time_finish(self, time_finish):
+        self.time_finish = time_finish
         self.t = numpy.linspace(self.time_start, self.time_finish, self.get_num_time_step())
 
 
@@ -59,8 +59,8 @@ class ChangerAnimationPlot:
         self.animation_plot = gui_main_one_dimensional__equation(self.animation_plot, input_data)
         return self.animation_plot
 
-    def change_finish_time(self, finish_time):
-        self.animation_plot.change_time_finish(finish_time)
+    def change_finish_time(self, time_finish):
+        self.animation_plot.change_time_finish(time_finish)
         if hasattr(self, "input_data"):
             self.restart()
 

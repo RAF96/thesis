@@ -96,6 +96,7 @@ class WriterPlot_new(tk.Frame):
     def get_init(self):
         def init():
             self.line.set_data([], [])
+            self.time.start_value()
             return self.line,
         return init
 
@@ -112,7 +113,6 @@ class WriterPlot_new(tk.Frame):
             self.animation.event_source.stop()
             self.canvas = FigureCanvasTkAgg(self.fig, master=self.parent)
             self.canvas.get_tk_widget().pack()
-        self.time.start_value()
 
     def print_animation(self, animation_plot):
         self.clear()
