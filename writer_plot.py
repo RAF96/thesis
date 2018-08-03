@@ -109,6 +109,7 @@ class WriterPlot_new(tk.Frame):
     def clear(self):
         if self.animation is not None:
             self.animation.event_source.stop()
+        self.time.start_value()
 
     def print_animation(self, animation_plot):
         self.clear()

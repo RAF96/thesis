@@ -11,6 +11,9 @@ class DisplayedTime:
         self.t = self.t + self.dt
         self.view_t.set(round(self.t, 1))
 
+    def start_value(self):
+        self.t = 0
+
 
 class AnimationPlot:
     def __init__(self):

@@ -26,9 +26,10 @@ class Controller:
         self.my_gui.plot.writer_plot.print_animation(equation)
 
     def change_finish_time(self, finish_time):
-        equation = self.changer_animation_plot.change_finish_time(finish_time)
+        self.my_gui.plot.writer_plot.clear()
+        self.changer_animation_plot.change_finish_time(finish_time)
         if hasattr(self, "input_data"):
-            self.my_gui.plot.writer_plot.print_animation(equation)
+            self.my_gui.plot.writer_plot.print_animation(self.changer_animation_plot.animation_plot)
 
     def pause_continue(self, *args):
         pass
