@@ -58,6 +58,9 @@ class Controller:
     def change_border_for_writer(self, bottom_x, bottom_y, up_x, up_y):
         self.my_gui.plot.writer_plot.update_xy_lim(bottom_x, bottom_y, up_x, up_y)
 
+    def update_view_time(self):
+        self.my_gui.plot.writer_plot.update_view_time()
+
 
 class InputData():
     def __init__(self):

@@ -1,8 +1,10 @@
 import tkinter as tk
 import numpy
+import bisect
 
 class DisplayedTime:
-    def __init__(self, t, dt):
+    def __init__(self, controller, t, dt):
+        self.controller = controller
         self.t = t
         self.view_t = tk.DoubleVar(t)
         self.dt = dt
@@ -10,6 +12,14 @@ class DisplayedTime:
     def next(self):
         self.t = self.t + self.dt
         self.view_t.set(round(self.t, 1))
+
+    def change_time(self, time):
+        self.t = time
+        self.update()
+
+    def update(self):
+        self.controller.update_view_time()
+
 
     def start_value(self):
         self.t = 0
@@ -46,6 +56,9 @@ class AnimationPlot:
     def change_time_finish(self, time_finish):
         self.time_finish = time_finish
         self.t = numpy.linspace(self.time_start, self.time_finish, self.get_num_time_step())
+
+    def get_index_by_time(self, time):
+        return bisect.bisect_left(self.t, time)
 
 
 

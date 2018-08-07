@@ -190,7 +190,7 @@ class GuiPlot(tk.Frame):
         Frame.__init__(self, parent)
 
         self.controller = controller
-        self.time = DisplayedTime(0, 0.05)
+        self.time = DisplayedTime(controller, 0, 0.05)
 
         self.frame_for_writer_plot = tk.Frame(self)
         self.frame_for_writer_plot.pack(side = tk.TOP)
@@ -200,14 +200,18 @@ class GuiPlot(tk.Frame):
         self.button = tk.Button(self, text="Пауза/Продолжить", command=(lambda: self.writer_plot.pause_continue()))
         self.button.pack(side = tk.TOP)
 
+        def foo(time):
+            # time_to_index
+            # self.writer_plot.change_animation_index(index)
+            self.time.change_time(float(time))
 
-        self.scale = ttk.Scale(
+        self.scale = tk.Scale(
                                self,
-                               variable=self.time.t,
+                               command=foo,
                                orient=tk.HORIZONTAL,
-                               length=200,
-                               from_=0.1,
-                               to=100.0
+                               resolution=1,
+                               from_=0,
+                               to=100
                                )
         self.scale.pack(side = tk.LEFT)
 
@@ -219,7 +223,9 @@ class GuiPlot(tk.Frame):
         self.view_time.pack(side = tk.RIGHT)
 
         def change_finish_time(finish_time):
-            self.controller.change_finish_time(float(finish_time))
+            finish_time = float(finish_time)
+            self.scale.to = finish_time # not working
+            self.controller.change_finish_time(finish_time)
 
         self.button_change_finish_time = tk.Button(self, text="Применить", command=(lambda: change_finish_time(self.finish_time.get())))
         self.button_change_finish_time.pack(side = tk.BOTTOM)
