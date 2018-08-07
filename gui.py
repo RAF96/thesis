@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import Frame
 import tkinter.ttk as ttk
 import controller
-from writer_plot import WriterPlot_new
+from writer_plot import WriterPlot
 from view_models import DisplayedTime
 
 
@@ -194,7 +194,7 @@ class GuiPlot(tk.Frame):
 
         self.frame_for_writer_plot = tk.Frame(self)
         self.frame_for_writer_plot.pack(side = tk.TOP)
-        self.writer_plot = WriterPlot_new(self.frame_for_writer_plot, controller, self.time)
+        self.writer_plot = WriterPlot(self.frame_for_writer_plot, controller, self.time)
         self.writer_plot.pack(side = tk.TOP)
 
         self.button = tk.Button(self, text="Пауза/Продолжить", command=(lambda: self.writer_plot.pause_continue()))
