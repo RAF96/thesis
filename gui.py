@@ -88,8 +88,8 @@ class Menu(tk.Frame):
         self.start_new_animation = tk.Button(self, text="Запуск", command=(lambda: controller.start_new(self.get_value())))
         self.start_new_animation.pack(side=tk.BOTTOM)
 
-        self.save = tk.Button(self, text="Сохранить", command=(lambda: self.save()))
-        self.save.pack(side=tk.BOTTOM)
+        self.button_save = tk.Button(self, text="Сохранить", command=(lambda: self.save()))
+        self.button_save.pack(side=tk.BOTTOM)
 
     def change_visibility_elements(self, *args):
         type_equation = self.type_equation.get()
@@ -254,6 +254,8 @@ class MenuChooseSaved(tk.Frame):
         self.label = tk.Label(self, text="Выбрать сохраненный график")
         self.label.pack()
 
+        self.controller = controller
+
         self.listbox = tk.Listbox(self)
         self.listbox.pack()
 
@@ -265,7 +267,20 @@ class MenuChooseSaved(tk.Frame):
         self.button_insert = tk.Button(self, text="Подставить", command=(lambda: controller.insert_equation(self.listbox.get("active"))))
         self.button_insert.pack()
 
-        self.button_delete = tk.Button(self, text="Удалить", command=(lambda: controller.delete_equation(self.listbox.get("active"))))
+        def foo():
+            toplevel = tk.Toplevel()
+            toplevel.focus_set()
+            warn_label = tk.Label(toplevel, text="Are you sure?")
+            warn_label.pack()
+
+            def bar():
+                toplevel.destroy()
+                self.controller.delete_equation(self.listbox.get("active"))
+
+            button_ok = tk.Button(toplevel, text="Ok", command=(lambda: bar()))
+            button_ok.pack()
+
+        self.button_delete = tk.Button(self, text="Удалить", command=(lambda: foo()))
         self.button_delete.pack()
 
         self.border_menu = MenuBorder(self, controller)
