@@ -8,7 +8,7 @@ import tkinter as tk
 
 
 class WriterPlot(tk.Frame):
-    def __init__(self, parent, controller, time):
+    def __init__(self, parent, controller, time, xy_lim):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.controller = controller
@@ -16,7 +16,8 @@ class WriterPlot(tk.Frame):
         self.fig = Figure()
         self.canvas = FigureCanvasTkAgg(self.fig, master=parent)
         self.canvas.get_tk_widget().pack()
-        self.ax = self.fig.add_subplot(111, xlim=(-10, 10), ylim=(-10, 10))
+        self.xy_lim = xy_lim
+        self.ax = self.fig.add_subplot(111, xlim=(xy_lim.bottom_x, xy_lim.up_x), ylim=(xy_lim.bottom_y, xy_lim.up_y))
         self.line, = self.ax.plot([], [], color='r')
         self.ax.axhline(y=0, color='b')
         self.ax.axvline(x=0, color='b')
@@ -24,7 +25,6 @@ class WriterPlot(tk.Frame):
         self.animation_plot = None
         self.animation_pause = True
         self.get_init()()
-
 
     def get_init(self):
         def init():
@@ -71,6 +71,15 @@ class WriterPlot(tk.Frame):
 
         self.parent.mainloop()
 
+    def restart(self):
+        self.clear()
+
+        self.animation_pause = False
+        self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
+                                       frames=self.get_frame(), interval=20, blit=True)
+        self.parent.mainloop()
+
+
     def change_animation_index(self, index):
         self.i = index
         if self.animation is not None:
@@ -89,3 +98,9 @@ class WriterPlot(tk.Frame):
         else:
             self.animation_pause = True
             self.animation.event_source.stop()
+
+    def update_xy_lim(self, bottom_x, bottom_y, up_x, up_y):
+        self.xy_lim.update(bottom_x, bottom_y, up_x, up_y)
+        self.ax.set_xlim([bottom_x, up_x])
+        self.ax.set_ylim([bottom_y, up_y])
+        self.restart()

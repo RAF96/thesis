@@ -55,8 +55,8 @@ class Controller:
         equation = self.db.equations.find_one({"name": name})
         self.my_gui.menu.set(equation)
 
-    def change_border_for_writer(self, bottom_x, bottom_y, up_x, up_y):
-        self.my_gui.plot.writer_plot.update_xy_lim(bottom_x, bottom_y, up_x, up_y)
+    def change_border_for_writer(self, *args):
+        self.my_gui.plot.writer_plot.update_xy_lim(*list(map(float, args)))
 
     def update_view_time(self):
         self.my_gui.plot.writer_plot.update_view_time()

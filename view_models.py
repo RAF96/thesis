@@ -20,7 +20,6 @@ class DisplayedTime:
     def update(self):
         self.controller.update_view_time()
 
-
     def start_value(self):
         self.t = 0
 
@@ -61,7 +60,6 @@ class AnimationPlot:
         return bisect.bisect_left(self.t, time)
 
 
-
 class ChangerAnimationPlot:
     def __init__(self):
         self.animation_plot = AnimationPlot()
@@ -80,3 +78,14 @@ class ChangerAnimationPlot:
     def restart(self):
         from library_equation.library_equation import gui_main_one_dimensional__equation
         self.animation_plot = gui_main_one_dimensional__equation(self.animation_plot, self.input_data)
+
+
+class LimBorder:
+    def __init__(self):
+        self.bottom_x = -10
+        self.bottom_y = -10
+        self.up_x = 10
+        self.up_y = 10
+
+    def update(self, bottom_x, bottom_y, up_x, up_y):
+        self.bottom_x, self.bottom_y, self.up_x, self.up_y = bottom_x, bottom_y, up_x, up_y
