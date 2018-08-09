@@ -103,4 +103,5 @@ class WriterPlot(tk.Frame):
         self.xy_lim.update(bottom_x, bottom_y, up_x, up_y)
         self.ax.set_xlim([bottom_x, up_x])
         self.ax.set_ylim([bottom_y, up_y])
-        self.restart()
+        if self.animation is not None:
+            self.restart()
