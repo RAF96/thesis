@@ -73,7 +73,11 @@ class InputData():
         list_entry_conditions = "coef", "y__x_tzero", "dydt__x_tzero"
         self.dict.update({"entry_conditions": {e : None for e in list_entry_conditions}})
 
-        list_boundary_values = "xeql", "y__xeql_t"
+        list_boundary_values = "xeql", "y__xzero_t", "y__xeql_t", \
+                "dydx__xzero_t", "dydx__xeql_t", \
+                "a__xzero", "b__xzero", "third_boundary_function__xzero", \
+                "a__xeql", "b__xeql", "third_boundary_function__xeql",
+
         self.dict.update({"boundary_values": {e : None for e in list_boundary_values}})
 
     def __getitem__(self, index):

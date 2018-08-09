@@ -79,11 +79,26 @@ class Menu(tk.Frame):
 
         self.dydt__x_tzero = LabelEntry(self, kwargs_label={"text": "(du/dt)(x, 0)"})
 
-        self.y__xzero_t = LabelEntry(self, kwargs_label={"text": "u(0, t)"})
-
+        # boundary value problem
         self.xeql = LabelEntry(self, kwargs_label={"text": "Конечная точка l"})
 
+        # 1 boundary value problem
+        self.y__xzero_t = LabelEntry(self, kwargs_label={"text": "u(0, t)"})
         self.y__xeql_t = LabelEntry(self, kwargs_label={"text": "u(l, t)"})
+
+        # 2 boundary value problem
+        self.dydx__xzero_t = LabelEntry(self, kwargs_label={"text": "(du/dx)(0, t)"})
+        self.dydx__xeql_t = LabelEntry(self, kwargs_label={"text": "(du/dx)(l, t)"})
+
+        # 3 boundary value problem
+        self.a__xzero = LabelEntry(self, kwargs_label={"text": "coef при u(0,t)"})
+        self.b__xzero = LabelEntry(self, kwargs_label={"text": "coef при (du/dx)(0,t)"})
+        self.third_boundary_function__xzero = LabelEntry(self, kwargs_label={"text": "Чему равна a*u(0, t) + b*(du/dx)(0, t)"})
+
+        self.a__xeql = LabelEntry(self, kwargs_label={"text": "coef при u(l,t)"})
+        self.b__xeql = LabelEntry(self, kwargs_label={"text": "coef при (du/dx)(l,t)"})
+        self.third_boundary_function__xeql = LabelEntry(self, kwargs_label={"text": "Чему равна a*u(l, t) + b*(du/dx)(l, t)"})
+
 
         self.start_new_animation = tk.Button(self, text="Запуск", command=(lambda: controller.start_new(self.get_value())))
         self.start_new_animation.pack(side=tk.BOTTOM)
@@ -94,19 +109,49 @@ class Menu(tk.Frame):
     def change_visibility_elements(self, *args):
         type_equation = self.type_equation.get()
         type_task = self.type_task.get()
+
         if type_equation == "волновое уравнение":
             self.dydt__x_tzero.pack()
         else:
             self.dydt__x_tzero.pack_forget()
 
+        # boundary value problem
+        self.xeql.pack_forget()
+
+        # 1 boundary value problem
+        self.y__xzero_t.pack_forget()
+        self.y__xeql_t.pack_forget()
+
+        # 2 boundary value problem
+        self.dydx__xzero_t.pack_forget()
+        self.dydx__xeql_t.pack_forget()
+
+        # 3 boundary value problem
+        self.a__xzero.pack_forget()
+        self.b__xzero.pack_forget()
+        self.third_boundary_function__xzero.pack_forget()
+
+        self.a__xeql.pack_forget()
+        self.b__xeql.pack_forget()
+        self.third_boundary_function__xeql.pack_forget()
+
         if type_task == "Первая краевая задача":
-            self.y__xzero_t.pack()
             self.xeql.pack()
+            self.y__xzero_t.pack()
             self.y__xeql_t.pack()
-        else:
-            self.y__xzero_t.pack_forget()
-            self.xeql.pack_forget()
-            self.y__xeql_t.pack_forget()
+        elif type_task == "Вторая краевая задача":
+            self.xeql.pack()
+            self.dydx__xzero_t.pack()
+            self.dydx__xeql_t.pack()
+        elif type_task == "Третья краевая задача":
+            self.xeql.pack()
+            self.a__xzero.pack()
+            self.b__xzero.pack()
+            self.third_boundary_function__xzero.pack()
+
+            self.a__xeql.pack()
+            self.b__xeql.pack()
+            self.third_boundary_function__xeql.pack()
 
 
     def get_value(self):
@@ -128,9 +173,20 @@ class Menu(tk.Frame):
                 },
                 "boundary_values":
                 {
-                    "y__xzero_t": self.y__xzero_t.get(),
                     "xeql": self.xeql.get(),
+                    "y__xzero_t": self.y__xzero_t.get(),
                     "y__xeql_t": self.y__xeql_t.get(),
+
+                    "dydx__xzero_t": self.dydx__xzero_t.get(),
+                    "dydx__xeql_t": self.dydx__xeql_t.get(),
+
+                    "a__xzero": self.a__xzero.get(),
+                    "b__xzero": self.b__xzero.get(),
+                    "third_boundary_function__xzero": self.third_boundary_function__xzero.get(),
+
+                    "a__xeql": self.a__xeql.get(),
+                    "b__xeql": self.b__xeql.get(),
+                    "third_boundary_function__xeql": self.third_boundary_function__xeql.get(),
                 }
             }
         )
