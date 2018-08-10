@@ -11,6 +11,9 @@ from sympy import abc
 from all_for_debug import debug_function_print_result, debug_input_file
 from reader import input_to_sympy
 from view_models import AnimationPlot
+from library_equation.common import calculate
+from library_equation.boundary_function import get_first_boundary_function, \
+        get_second_boundary_function, get_third_boundary_function
 
 
 def gui_main_one_dimensional__heat_equation__task_0(animation_plot, input_data):
@@ -21,8 +24,6 @@ def gui_main_one_dimensional__heat_equation__task_0(animation_plot, input_data):
     else:
         return gui_main_one_dimensional__heat_equation__homogeneous(animation_plot, coef, y__x_tzero)
 
-def calculate(function):
-    return sympy.lambdify((abc.x, abc.t), function)
 
 def gui_main_one_dimensional__heat_equation__homogeneous(animation_plot, coef, y__x_tzero):
     function = calculate(one_dimensional__heat_equation__homogeneous(coef, y__x_tzero))
@@ -79,115 +80,42 @@ def calculate__one_dimensional__heat_equation__inhomogeneous(coef, y__x_tzero, e
 
 def gui_main_one_dimensional__heat_equation__task_1(animation_plot, input_data):
     input_data_get = input_data.get("coef", "y__x_tzero", "external_influences", "y__xzero_t", "y__xeql_t")
-    args = input_to_sympy(*input_data_get)
-    return calculate__one_dimensional__heat_equation__task_1(animation_plot, *args)
-
-
-def calculate__one_dimensional__heat_equation__task_1(animation_plot, coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t):
-    y__x_tzero = calculate(y__x_tzero)
-    external_influences = calculate(external_influences)
-    y__xzero_t = calculate(y__xzero_t)
-    y__xeql_t = calculate(y__xeql_t)
-    sqrt_coef = coef ** 0.5
-
-    def function(x, t, y):
-        y_next = None
-        n = len(x) - 1
-        dx = x[1] - x[0]
-        dt = 0.05
-        gamma2 = dt * (1. / dx * sqrt_coef) ** 2
-
-        if y is None:
-            y = [0] * (n + 1)
-            for i in range(0, n+1):
-                y[i] = y__x_tzero(x[i], t) + dt * external_influences(x[i], t)
-            return y
-
-        y_next = [0] * (n + 1)
-        for i in range(1, n):
-            y_next[i] = y[i] + \
-                             gamma2 * (y[i + 1] - 2 * y[i] + y[i - 1]) + \
-                             dt * external_influences(x[i], t)
-
-        y_next[0] = y__xzero_t(x[0], t)
-        y_next[n] = y__xeql_t(x[n], t)
-
-        y = y_next
-        return y_next
-
-    animation_plot.clean_result_part()
-    y = None
-    for t in animation_plot.t:
-        y = function(animation_plot.x, t, y)
-        animation_plot.y.append(y)
-
-    return animation_plot
-
+    coef, y__x_tzero, external_influences, y__xzero_t, y__xeql_t = input_to_sympy(*input_data_get)
+    boundary_function__xzero = get_first_boundary_function(y__xzero_t)
+    boundary_function__xeql = get_first_boundary_function(y__xeql_t)
+    return calculate__one_dimensional__heat_equation__boundary_task(animation_plot, coef, y__x_tzero, external_influences, \
+            boundary_function__xzero, boundary_function__xeql)
 
 def gui_main_one_dimensional__heat_equation__task_2(animation_plot, input_data):
     input_data_get = input_data.get("coef", "y__x_tzero", "external_influences", "dydx__xzero_t", "dydx__xeql_t")
-    args = input_to_sympy(*input_data_get)
-    return calculate__one_dimensional__heat_equation__task_2(animation_plot, *args)
+    coef, y__x_tzero, external_influences, dydx__xzero_t, dydx__xeql_t = input_to_sympy(*input_data_get)
 
-
-def calculate__one_dimensional__heat_equation__task_2(animation_plot, coef, y__x_tzero, \
-        external_influences, dydx__xzero_t, dydx__xeql_t):
-    y__x_tzero = calculate(y__x_tzero)
-    external_influences = calculate(external_influences)
-    dydx__xzero_t = calculate(dydx__xzero_t)
-    dydx__xeql_t = calculate(dydx__xeql_t)
-    sqrt_coef = coef ** 0.5
-
-    def function(x, t, y):
-        y_next = None
-        n = len(x) - 1
-        dx = x[1] - x[0]
-        dt = 0.05
-        gamma2 = dt * (1. / dx * sqrt_coef) ** 2
-
-        if y is None:
-            y = [0] * (n + 1)
-            for i in range(0, n+1):
-                y[i] = y__x_tzero(x[i], t) + dt * external_influences(x[i], t)
-            return y
-
-        y_next = [0] * (n + 1)
-        for i in range(1, n):
-            y_next[i] = y[i] + \
-                             gamma2 * (y[i + 1] - 2 * y[i] + y[i - 1]) + \
-                             dt * external_influences(x[i], t)
-
-        y_next[0] = dydx__xzero_t(x[0], t) * dt + y[0]
-        y_next[n] = dydx__xeql_t(x[n], t) * dt + y[n]
-
-        y = y_next
-        return y_next
-
-    animation_plot.clean_result_part()
-    y = None
-    for t in animation_plot.t:
-        y = function(animation_plot.x, t, y)
-        animation_plot.y.append(y)
-
-    return animation_plot
+    boundary_function__xzero = get_second_boundary_function(dydx__xzero_t)
+    boundary_function__xeql = get_second_boundary_function(dydx__xeql_t)
+    return calculate__one_dimensional__heat_equation__boundary_task(animation_plot, coef, y__x_tzero, external_influences, \
+            boundary_function__xzero, boundary_function__xeql)
 
 
 def gui_main_one_dimensional__heat_equation__task_3(animation_plot, input_data):
     input_data_get = input_data.get("coef", "y__x_tzero", "external_influences", \
             "a__xzero", "b__xzero", "third_boundary_function__xzero", \
             "a__xeql", "b__xeql", "third_boundary_function__xeql")
-    args = input_to_sympy(*input_data_get)
-    return calculate__one_dimensional__heat_equation__task_3(animation_plot, *args)
 
-
-def calculate__one_dimensional__heat_equation__task_3(animation_plot, coef, y__x_tzero, external_influences, \
+    coef, y__x_tzero, external_influences, \
             a__xzero, b__xzero, third_boundary_function__xzero, \
-            a__xeql, b__xeql, third_boundary_function__xeql):
+            a__xeql, b__xeql, third_boundary_function__xeql = input_to_sympy(*input_data_get)
+
+    boundary_function__xzero = get_third_boundary_function(a__xzero, b__xzero, third_boundary_function__xzero)
+    boundary_function__xeql = get_third_boundary_function(a__xeql, b__xeql, third_boundary_function__xeql)
+    return calculate__one_dimensional__heat_equation__boundary_task(animation_plot, coef, y__x_tzero, external_influences, \
+            boundary_function__xzero, boundary_function__xeql)
+
+
+def calculate__one_dimensional__heat_equation__boundary_task(animation_plot, coef, y__x_tzero, external_influences, \
+            boundary_function__xzero, boundary_function__xeql):
 
     y__x_tzero = calculate(y__x_tzero)
     external_influences = calculate(external_influences)
-    third_boundary_function__xzero = calculate(third_boundary_function__xzero)
-    third_boundary_function__xeql = calculate(third_boundary_function__xeql)
     sqrt_coef = coef ** 0.5
 
     def function(x, t, y):
@@ -208,9 +136,13 @@ def calculate__one_dimensional__heat_equation__task_3(animation_plot, coef, y__x
             y_next[i] = y[i] + \
                              gamma2 * (y[i + 1] - 2 * y[i] + y[i - 1]) + \
                              dt * external_influences(x[i], t)
-        y_next[0] = (third_boundary_function__xzero(x[0], t) * dt + y[0]) / \
-                (dt * a__xzero + b__xzero)
-        y_next[n] = (third_boundary_function__xeql(x[n], t) * dt + y[n]) / (dt * a__xeql + b__xeql)
+
+        # y_next[0] = (third_boundary_function__xzero(x[0], t) * dt + y[0]) / \
+        #        (dt * a__xzero + b__xzero)
+        # y_next[n] = (third_boundary_function__xeql(x[n], t) * dt + y[n]) / (dt * a__xeql + b__xeql)
+
+        y_next[0] = boundary_function__xzero(x[0], t, dt, y[0])
+        y_next[n] = boundary_function__xeql(x[n], t, dt, y[n])
 
         y = y_next
         return y_next
@@ -222,5 +154,3 @@ def calculate__one_dimensional__heat_equation__task_3(animation_plot, coef, y__x
         animation_plot.y.append(y)
 
     return animation_plot
-
-

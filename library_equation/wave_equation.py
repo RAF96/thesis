@@ -11,6 +11,9 @@ from sympy import abc
 from all_for_debug import debug_function_print_result, debug_input_file
 from reader import input_to_sympy
 from view_models import AnimationPlot
+from library_equation.boundary_function import get_first_boundary_function, \
+        get_second_boundary_function, get_third_boundary_function
+from library_equation.common import calculate
 
 
 def gui_main_one_dimensional__wave_equation__task_0(animation_plot, input_data):
@@ -37,10 +40,6 @@ def one_dimensional__wave_equation__inhomogeneous(coef, y__x_tzero, dydt__x_tzer
            sympy.integrate(sympy.integrate(function_for_integral, (x, x - sqrt_coef * (t - T), x + sqrt_coef * (t - T))), (T, 0, t))
 
 
-def calculate(function):
-    return sympy.lambdify((abc.x, abc.t), function)
-
-
 def gui_main_one_dimensional__wave_equation__homogeneous(animation_plot, coef, y__x_tzero, dydt__x_tzero):
     coef, y__x_tzero, dydt__x_tzero = input_to_sympy(coef, y__x_tzero, dydt__x_tzero)
     function = calculate(one_dimensional__wave_equation__homogeneous(coef, y__x_tzero, dydt__x_tzero))
@@ -62,19 +61,45 @@ def gui_main_one_dimensional__wave_equation__inhomogeneous(animation_plot, coef,
 
     return animation_plot
 
-
 def gui_main_one_dimensional__wave_equation__task_1(animation_plot, input_data):
     input_data_get = input_data.get("coef", "y__x_tzero", "dydt__x_tzero", "external_influences", "y__xzero_t", "y__xeql_t")
-    args = input_to_sympy(*input_data_get)
-    return calculate__one_dimensional__wave_equation__task_1(animation_plot, *args)
+    coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql_t = input_to_sympy(*input_data_get)
+    boundary_function__xzero = get_first_boundary_function(y__xzero_t)
+    boundary_function__xeql = get_first_boundary_function(y__xeql_t)
+    return calculate__one_dimensional__wave_equation__boundary_task(animation_plot, coef, y__x_tzero, dydt__x_tzero, external_influences, \
+            boundary_function__xzero, boundary_function__xeql)
+
+def gui_main_one_dimensional__wave_equation__task_2(animation_plot, input_data):
+    input_data_get = input_data.get("coef", "y__x_tzero", "dydt__x_tzero", "external_influences", "dydx__xzero_t", "dydx__xeql_t")
+    coef, y__x_tzero, dydt__x_tzero, external_influences, dydx__xzero_t, dydx__xeql_t = input_to_sympy(*input_data_get)
+
+    boundary_function__xzero = get_second_boundary_function(dydx__xzero_t)
+    boundary_function__xeql = get_second_boundary_function(dydx__xeql_t)
+    return calculate__one_dimensional__wave_equation__boundary_task(animation_plot, coef, y__x_tzero, dydt__x_tzero, external_influences, \
+            boundary_function__xzero, boundary_function__xeql)
 
 
-def calculate__one_dimensional__wave_equation__task_1(animation_plot, coef, y__x_tzero, dydt__x_tzero, external_influences, y__xzero_t, y__xeql_t):
+def gui_main_one_dimensional__wave_equation__task_3(animation_plot, input_data):
+    input_data_get = input_data.get("coef", "y__x_tzero", "dydt__x_tzero", "external_influences", \
+            "a__xzero", "b__xzero", "third_boundary_function__xzero", \
+            "a__xeql", "b__xeql", "third_boundary_function__xeql")
+
+    coef, y__x_tzero, dydt__x_tzero, external_influences, \
+            a__xzero, b__xzero, third_boundary_function__xzero, \
+            a__xeql, b__xeql, third_boundary_function__xeql = input_to_sympy(*input_data_get)
+
+    boundary_function__xzero = get_third_boundary_function(a__xzero, b__xzero, third_boundary_function__xzero)
+    boundary_function__xeql = get_third_boundary_function(a__xeql, b__xeql, third_boundary_function__xeql)
+    return calculate__one_dimensional__wave_equation__boundary_task(animation_plot, coef, y__x_tzero, dydt__x_tzero, external_influences, \
+            boundary_function__xzero, boundary_function__xeql)
+
+
+def calculate__one_dimensional__wave_equation__boundary_task(animation_plot, coef, y__x_tzero, dydt__x_tzero, external_influences, \
+        boundary_function__xzero, boundary_function__xeql):
+
     y__x_tzero = calculate(y__x_tzero)
     dydt__x_tzero = calculate(dydt__x_tzero)
     external_influences = calculate(external_influences)
-    y__xzero_t = calculate(y__xzero_t)
-    y__xeql_t = calculate(y__xeql_t)
     sqrt_coef = coef ** 0.5
 
     def function(x, t, y_previous, y):
@@ -103,8 +128,8 @@ def calculate__one_dimensional__wave_equation__task_1(animation_plot, coef, y__x
                                  dt * dydt__x_tzero(x[i], t) + \
                                  dt ** 2 / 2 * external_influences(x[i], t)
 
-        y_next[0] = y__xzero_t(x[i], t)
-        y_next[n] = y__xeql_t(x[i], t)
+        y_next[0] = boundary_function__xzero(x[0], t, dt, y[0])
+        y_next[n] = boundary_function__xeql(x[n], t, dt, y[n])
 
         return y_next
 
@@ -116,11 +141,3 @@ def calculate__one_dimensional__wave_equation__task_1(animation_plot, coef, y__x
         y_previous, y = y, animation_plot.y[-1]
 
     return animation_plot
-
-
-def gui_main_one_dimensional__wave_equation__task_2(input_data):
-    pass
-
-
-def gui_main_one_dimensional__wave_equation__task_3(input_data):
-    pass
