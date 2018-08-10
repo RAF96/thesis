@@ -29,8 +29,8 @@ def gui_main_one_dimensional__heat_equation__homogeneous(animation_plot, coef, y
     function = calculate(one_dimensional__heat_equation__homogeneous(coef, y__x_tzero))
 
     animation_plot.clean_result_part()
-    for t in animation_plot.t:
-        next_y = function(animation_plot.x, t)
+    for t in animation_plot.get_t():
+        next_y = function(animation_plot.get_x(), t)
         animation_plot.y.append(next_y)
 
     return animation_plot
@@ -149,8 +149,8 @@ def calculate__one_dimensional__heat_equation__boundary_task(animation_plot, coe
 
     animation_plot.clean_result_part()
     y = None
-    for t in animation_plot.t:
-        y = function(animation_plot.x, t, y)
+    for t in animation_plot.get_t():
+        y = function(animation_plot.get_x(), t, y)
         animation_plot.y.append(y)
 
     return animation_plot

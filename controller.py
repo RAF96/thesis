@@ -11,7 +11,7 @@ class Controller:
         self.client = pymongo.MongoClient('localhost', 27017)
         self.db = self.client.test_database
 
-        self.changer_animation_plot = ChangerAnimationPlot()
+        self.changer_animation_plot = ChangerAnimationPlot(self)
 
         self.window = tk.Tk()
         self.window.attributes()
@@ -60,6 +60,10 @@ class Controller:
 
     def update_view_time(self):
         self.my_gui.plot.writer_plot.update_view_time()
+
+    def get_lim_border_x(self):
+        return self.my_gui.plot.writer_plot.xy_lim.get_x()
+
 
 
 class InputData():

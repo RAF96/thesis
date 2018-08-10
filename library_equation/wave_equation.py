@@ -45,8 +45,8 @@ def gui_main_one_dimensional__wave_equation__homogeneous(animation_plot, coef, y
     function = calculate(one_dimensional__wave_equation__homogeneous(coef, y__x_tzero, dydt__x_tzero))
 
     animation_plot.clean_result_part()
-    for t in animation_plot.t:
-        animation_plot.y.append(function(animation_plot.x, t))
+    for t in animation_plot.get_t():
+        animation_plot.y.append(function(animation_plot.get_x(), t))
 
     return animation_plot
 
@@ -56,8 +56,8 @@ def gui_main_one_dimensional__wave_equation__inhomogeneous(animation_plot, coef,
     function = calculate(one_dimensional__wave_equation__inhomogeneous(coef, y__x_tzero, dydt__x_tzero, external_influences))
 
     animation_plot.clean_result_part()
-    for t in animation_plot.t:
-        animation_plot.y.append(function(animation_plot.x, t))
+    for t in animation_plot.get_t():
+        animation_plot.y.append(function(animation_plot.get_x(), t))
 
     return animation_plot
 
@@ -136,8 +136,8 @@ def calculate__one_dimensional__wave_equation__boundary_task(animation_plot, coe
     animation_plot.clean_result_part()
     y_previous = y = None
 
-    for t in animation_plot.t:
-        animation_plot.y.append(function(animation_plot.x, t, y_previous, y))
+    for t in animation_plot.get_t():
+        animation_plot.y.append(function(animation_plot.get_x(), t, y_previous, y))
         y_previous, y = y, animation_plot.y[-1]
 
     return animation_plot

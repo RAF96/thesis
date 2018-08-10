@@ -37,7 +37,7 @@ class WriterPlot(tk.Frame):
 
     def get_animate(self):
         def animate(i):
-            self.line.set_data(self.animation_plot.x, self.animation_plot.y[i])
+            self.line.set_data(self.animation_plot.get_x(), self.animation_plot.y[i])
             self.time.next()
             return self.line,
         return animate
