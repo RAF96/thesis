@@ -1,15 +1,16 @@
 import tkinter as tk
-import pymongo
-# from library_equation.library_equation import gui_main_one_dimensional__equation
 import gui
 from view_models import ChangerAnimationPlot
+import json
+from pathlib import Path
+import os
 
 
 class Controller:
 
     def __init__(self):
-        self.client = pymongo.MongoClient('localhost', 27017)
-        self.db = self.client.test_database
+        self.db = DB("data")
+        self.db.create_table("equations")
 
         self.changer_animation_plot = ChangerAnimationPlot(self)
 
@@ -34,18 +35,15 @@ class Controller:
     def get_names_saved_equations(self):
         if not self.db.equations:
             return tuple()
-        return (element["name"] for element in self.db.equations.find())
+        return (element for element in self.db.equations.find())
 
     def save(self, name, input_data):
-        list_equation = (
-            "name",
-        )
-        equation = {"name": name}
+        equation = {name : {"name": name}}
         for key1, value1 in input_data.items():
-            equation.update(value1)
+            equation[name].update(value1)
 
         self.db.equations.insert_one(equation)
-        self.my_gui.menu_choose_saved.listbox.insert(tk.END, equation["name"])
+        self.my_gui.menu_choose_saved.listbox.insert(tk.END, name)
 
     def delete_equation(self, name):
         self.db.equations.delete_one({"name": name})
@@ -63,6 +61,57 @@ class Controller:
 
     def get_lim_border_x(self):
         return self.my_gui.plot.writer_plot.xy_lim.get_x()
+
+
+class DB:
+    def __init__(self, name):
+        self.name = name
+        self.path = "./" + name
+
+        directory = self.path # os.path.dirname(self.path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+    def create_table(self, name):
+        self.__setattr__(name, TableBD(self.path, name))
+
+
+class TableBD:
+    def __init__(self, path_db, name):
+        self.name = name
+        self.path = "%s/%s.json" % (path_db, name)
+
+        if Path(self.path).exists() is False:
+            outfile = open(self.path, "w")
+            json.dump(dict(), outfile, sort_keys=True, indent=4)
+
+    def find(self):
+        data = None
+        with open(self.path, "r") as infile:
+            data = json.load(infile)
+        return data
+
+    def insert_one(self, equation):
+        data = None
+        with open(self.path, "r") as infile:
+            data = json.load(infile)
+        data.update(equation)
+        with open(self.path, "w") as outfile:
+            json.dump(data, outfile, sort_keys=True, indent=4)
+
+    def delete_one(self, name):
+        data = None
+        with open(self.path, "r") as infile:
+            data = json.load(infile)
+        data.pop(name["name"])
+        with open(self.path, "w") as outfile:
+            json.dump(data, outfile, sort_keys=True, indent=4)
+
+    def find_one(self, name):
+        data = None
+        with open(self.path, "r") as infile:
+            data = json.load(infile)
+        return data[name["name"]]
 
 
 
