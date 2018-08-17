@@ -213,6 +213,27 @@ class Menu(tk.Frame):
             self.xeql.entry_text.set(equation["xeql"])
         if equation.get("y__xeql_t") is not None:
             self.y__xeql_t.entry_text.set(equation["y__xeql_t"])
+
+        if equation.get("dydx__xzero_t") is not None:
+            self.dydx__xzero_t.entry_text.set(equation["dydx__xzero_t"])
+        if equation.get("dydx__xeql_t") is not None:
+            self.dydx__xeql_t.entry_text.set(equation["dydx__xeql_t"])
+
+
+        if equation.get("a__xzero") is not None:
+            self.a__xzero.entry_text.set(equation["a__xzero"])
+        if equation.get("b__xzero") is not None:
+            self.b__xzero.entry_text.set(equation["b__xzero"])
+        if equation.get("third_boundary_function__xzero") is not None:
+            self.third_boundary_function__xzero.entry_text.set(equation["third_boundary_function__xzero"])
+
+        if equation.get("a__xeql") is not None:
+            self.a__xeql.entry_text.set(equation["a__xeql"])
+        if equation.get("b__xeql") is not None:
+            self.b__xeql.entry_text.set(equation["b__xeql"])
+        if equation.get("third_boundary_function__xeql") is not None:
+            self.third_boundary_function__xeql.entry_text.set(equation["third_boundary_function__xeql"])
+
         self.change_visibility_elements()
 
     def save(self):
