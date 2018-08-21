@@ -53,6 +53,7 @@ class WriterPlot(tk.Frame):
         def foo():
             while True:
                 self.i = 0
+                self.time.start_value()
                 while self.i < self.animation_len:
                     yield self.i
                     self.i += 1
