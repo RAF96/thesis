@@ -292,7 +292,7 @@ class GuiPlot(tk.Frame):
                                )
         self.scale.pack(side = tk.LEFT)
 
-        self.finish_time = LabelEntry(self, kwargs_label={"text": "Finish Time"})
+        self.finish_time = LabelEntry(self, kwargs_label={"text": "Окончательное время"})
         self.finish_time.entry_text.set(100)
         self.finish_time.pack(side = tk.LEFT)
 
@@ -347,14 +347,14 @@ class MenuChooseSaved(tk.Frame):
         def foo():
             toplevel = tk.Toplevel()
             toplevel.focus_set()
-            warn_label = tk.Label(toplevel, text="Are you sure?")
+            warn_label = tk.Label(toplevel, text="Вы уверены, что хотите удалить запись?")
             warn_label.pack()
 
             def bar():
                 toplevel.destroy()
                 self.controller.delete_equation(self.listbox.get("active"))
 
-            button_ok = tk.Button(toplevel, text="Ok", command=(lambda: bar()))
+            button_ok = tk.Button(toplevel, text="Да", command=(lambda: bar()))
             button_ok.pack()
 
         self.button_delete = tk.Button(self, text="Удалить", command=(lambda: foo()))
