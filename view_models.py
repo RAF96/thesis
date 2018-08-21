@@ -89,7 +89,8 @@ class ChangerAnimationPlot:
 
     def change_finish_time(self, time_finish):
         self.time_finish = time_finish
-        self.animation_plot.change_time_finish(time_finish)
+        if self.animation_plot is not None:
+            self.animation_plot.change_time_finish(time_finish)
         if hasattr(self, "input_data"):
             self.restart()
 
