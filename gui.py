@@ -355,7 +355,7 @@ class MenuChooseSaved(tk.Frame):
 
         self.controller = controller
 
-        self.listbox = tk.Listbox(self)
+        self.listbox = tk.Listbox(self, height = 20)
         self.listbox.pack()
 
         names = controller.get_names_saved_equations()
