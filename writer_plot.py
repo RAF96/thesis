@@ -43,11 +43,11 @@ class WriterPlot(tk.Frame):
         return animate
 
     def clear(self):
+        self.canvas.get_tk_widget().pack_forget()
         if self.animation is not None:
-            self.canvas.get_tk_widget().pack_forget()
             self.animation.event_source.stop()
-            self.canvas = FigureCanvasTkAgg(self.fig, master=self.parent)
-            self.canvas.get_tk_widget().pack()
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.parent)
+        self.canvas.get_tk_widget().pack()
 
     def get_frame(self):
         def foo():
@@ -76,9 +76,9 @@ class WriterPlot(tk.Frame):
         self.clear()
 
         self.animation_pause = False
-        self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
+        if self.animation is not None:
+            self.animation = animation.FuncAnimation(self.fig, self.get_animate(), init_func=self.get_init(),
                                        frames=self.get_frame(), interval=20, blit=True)
-        self.parent.mainloop()
 
 
     def change_animation_index(self, index):
@@ -104,5 +104,4 @@ class WriterPlot(tk.Frame):
         self.xy_lim.update(bottom_x, bottom_y, up_x, up_y)
         self.ax.set_xlim([bottom_x, up_x])
         self.ax.set_ylim([bottom_y, up_y])
-        if self.animation is not None:
-            self.restart()
+        self.restart()

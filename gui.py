@@ -282,16 +282,6 @@ class GuiPlot(tk.Frame):
             # self.writer_plot.change_animation_index(index)
             self.time.change_time(float(time))
 
-        self.scale = tk.Scale(
-                               self,
-                               command=foo,
-                               orient=tk.HORIZONTAL,
-                               resolution=1,
-                               from_=0,
-                               to=100,
-                               length=200,
-                               )
-        self.scale.pack(side = tk.TOP)
 
         self.view_time = ViewTime(self, controller, self.time)
         self.view_time.pack(side = tk.RIGHT)
@@ -308,11 +298,36 @@ class GuiPlot(tk.Frame):
                 finish_time = float(finish_time)
                 self.controller.change_finish_time(finish_time)
 
+                self.scale.pack_forget()
+
+                self.scale = tk.Scale(
+                               self,
+                               command=foo,
+                               orient=tk.HORIZONTAL,
+                               resolution=1,
+                               from_=0,
+                               to=finish_time,
+                               length=200,
+                               )
+                self.scale.pack(side = tk.TOP)
+
+
             button_ok = tk.Button(toplevel, text="Да", command=(lambda: bar(finish_time.get())))
             button_ok.pack()
 
         self.button_change_finish_time = tk.Button(self, text="Изменить окончательное время", command=(lambda: change_finish_time()))
         self.button_change_finish_time.pack(side = tk.BOTTOM)
+
+        self.scale = tk.Scale(
+                               self,
+                               command=foo,
+                               orient=tk.HORIZONTAL,
+                               resolution=1,
+                               from_=0,
+                               to=100,
+                               length=200,
+                               )
+        self.scale.pack(side = tk.TOP)
 
 
     def change_to(self, text):
