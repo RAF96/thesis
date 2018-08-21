@@ -288,23 +288,30 @@ class GuiPlot(tk.Frame):
                                orient=tk.HORIZONTAL,
                                resolution=1,
                                from_=0,
-                               to=100
+                               to=100,
+                               length=200,
                                )
-        self.scale.pack(side = tk.LEFT)
-
-        self.finish_time = LabelEntry(self, kwargs_label={"text": "Окончательное время"})
-        self.finish_time.entry_text.set(100)
-        self.finish_time.pack(side = tk.LEFT)
+        self.scale.pack(side = tk.TOP)
 
         self.view_time = ViewTime(self, controller, self.time)
         self.view_time.pack(side = tk.RIGHT)
 
-        def change_finish_time(finish_time):
-            finish_time = float(finish_time)
-            self.scale.to = finish_time # not working
-            self.controller.change_finish_time(finish_time)
+        def change_finish_time():
+            toplevel = tk.Toplevel()
+            toplevel.focus_set()
+            finish_time = LabelEntry(toplevel, kwargs_label={"text": "Окончательное время"})
+            finish_time.entry_text.set(100)# self.scale.to)
+            finish_time.pack(side = tk.TOP)
 
-        self.button_change_finish_time = tk.Button(self, text="Применить", command=(lambda: change_finish_time(self.finish_time.get())))
+            def bar(finish_time):
+                toplevel.destroy()
+                finish_time = float(finish_time)
+                self.controller.change_finish_time(finish_time)
+
+            button_ok = tk.Button(toplevel, text="Да", command=(lambda: bar(finish_time.get())))
+            button_ok.pack()
+
+        self.button_change_finish_time = tk.Button(self, text="Изменить окончательное время", command=(lambda: change_finish_time()))
         self.button_change_finish_time.pack(side = tk.BOTTOM)
 
 
